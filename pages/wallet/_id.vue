@@ -1,10 +1,13 @@
 <template>
   <div class="container-fluid p-0">
     <h1 class="title">
-      Konto
+      Konto {{ playerID }}
     </h1>
+    <div class="container-md pb-4">
+      <transaction-item-create :playerID="playerID" :players="players" :playerName="playerName"/>
+    </div>
     <div class="container-md pb-2">
-      <div class="balance box">Kontostand: <span v-bind:class="{ negative: isNegativeBal, positive: !isNegativeBal }">{{ getPriceString }}</span> ISK</div>
+      <div class="balance box">Kontostand von {{ playerName }}: <span v-bind:class="{ negative: isNegativeBal, positive: !isNegativeBal }">{{ getPriceString }}</span> ISK</div>
     </div>
     <div class="container-md box">Austehende Transaktionen</div>
     <transaction-list :transactions="transactionsUnverified" />
@@ -15,9 +18,12 @@
 
 <script>
   import TransactionList from '~/components/TransactionList.vue'
+  import TransactionItemCreate from '~/components/TransactionItemCreate.vue'
+
   export default {
     components: {
-      TransactionList
+      TransactionList,
+      TransactionItemCreate
     },
     data() {
       return {
@@ -27,8 +33,21 @@
         transactionsUnverified: {
           type: Array
         },
+        playerID: {
+          type: Number,
+          default: -1
+        },
         negativeBal: {
           type: Boolean
+        },
+        players: {
+          type: Array
+        },
+        playerName: {
+          tyoe: String,
+          default() {
+            return "";
+          }
         }
       }
     },
@@ -42,13 +61,17 @@
       }
     },
     async asyncData(ctx) {
-      //console.log(ctx)
+      //console.log("t:" + Number(ctx.route.params.id));
       const transactions = await ctx.app.$services.transaction.findAllByUserId(ctx.route.params.id);
       //console.log(ctx.app.$services.transaction.getVerified(transactions));
+      const player = await ctx.app.$services.player.findById(ctx.route.params.id);
       return {
+        playerID: Number(ctx.route.params.id),
         transactionsVerified: await ctx.app.$services.transaction.getVerified(transactions),
         transactionsUnverified: await ctx.app.$services.transaction.getUnverified(transactions),
         balance: await ctx.app.$services.transaction.getBalanceByUserId(ctx.route.params.id),
+        players: await ctx.app.$services.player.findAllByCorpID(player.corpID),
+        playerName: player.name
       }
     }
   }

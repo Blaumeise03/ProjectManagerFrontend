@@ -70,6 +70,7 @@
         return this.transaction.fromName;
       },
       getTo: function () {
+        //console.log(this.transaction)
         if (this.transaction.toID == -1) return "N/A";
         return this.transaction.toName;
       }

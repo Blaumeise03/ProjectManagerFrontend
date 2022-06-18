@@ -46,4 +46,16 @@ export default class TransactionAPI {
       return balance
     })
   }
+  push(transaction) {
+    return this.axios({
+      method: 'post',
+      url: 'bank/transaction',
+      data: {
+        transaction
+      },
+      withCredentials: true
+    }).then((response) => {
+      return response.data
+    })
+  }
 }
