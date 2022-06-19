@@ -1,0 +1,61 @@
+<template>
+  <div class="container-fluid p-0">
+    <h1 class="title">
+      Transaction {{ transactionID }}
+    </h1>
+    <transaction-list :transactions="transactions"/>
+    <div class="box">
+      Status: 
+    </div>
+    <transaction-item-create :transaction="transaction"/>
+  </div>
+</template>
+
+<script>
+  import TransactionList from '~/components/TransactionList.vue'
+  import TransactionItemCreate from '~/components/TransactionItemCreate.vue'
+
+  export default {
+    components: {
+      TransactionList,
+      TransactionItemCreate
+    },
+    data() {
+      return {
+        transactionID: -1,
+        transaction: {
+          type: Object,
+          default() {
+            return null
+          }
+        },
+        transactions: {
+          type: Array,
+          default() {
+            return []
+          }
+        }
+      }
+    },
+    computed: {
+      
+    },
+    async asyncData(ctx) {
+      const t = await ctx.$services.transaction.findById(ctx.route.params.id);
+      return {
+        transactionID: Number(ctx.route.params.id),
+        transaction: t,
+        transactions: [t]
+      }
+    }
+  }
+</script>
+<style lang="scss">
+  .negative {
+    color: red;
+  }
+
+  .positive {
+    color: green;
+  }
+</style>

@@ -40,9 +40,6 @@
       deleteItem(item) {
         this.transactions.splice(this.transactions.indexOf(item), 1)
       }
-    },
-    async asyncData(ctx) {
-      console.log("test")
     }
   }
 </script>

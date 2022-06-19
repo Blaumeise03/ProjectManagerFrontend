@@ -16,7 +16,7 @@ export default class PlayerAPI {
     }).then((response) => {
       const t = response.data;
       //console.log(response.data)
-      return new Player(t.uid, t.name, t.ingameID, t.corpID, t.parent, t.user);
+      return new Player(t.uid, t.name, t.ingameID, t.corp, t.parent, t.user);
     })
   }
 
@@ -28,7 +28,7 @@ export default class PlayerAPI {
     }).then((response) => {
       const players = []
       response.data.forEach((t) => {
-        players.push(new Player(t.uid, t.name, t.ingameID, t.corpID, t.parent, t.user))
+        players.push(new Player(t.uid, t.name, t.ingameID, t.corp, t.parent, t.user))
       })
       return players
     })
@@ -44,7 +44,7 @@ export default class PlayerAPI {
     }).then((response) => {
       const players = []
       response.data.forEach((t) => {
-        players.push(new Player(t.uid, t.name, t.ingameID, t.corpID, t.parent, t.user))
+        players.push(new Player(t.uid, t.name, t.ingameID, t.corp, t.parent, t.user))
       })
       //console.log(players)
       return players

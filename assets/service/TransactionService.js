@@ -20,7 +20,20 @@ export default class TransactionAPI {
     });
     return unverified;
   }
-
+  findById(id) {
+    //console.log(id);
+    return this.axios({
+      method: 'get',
+      url: 'bank/transaction/' + id,
+      withCredentials: true
+    }).then((response) => {
+      const d = response.data;
+      //console.log(response);
+      const t = new Transaction(d.tid, d.from, d.to, d.price, d.purpose, d.reference, d.time, d.verified, d.nameFrom, d.nameTo);
+      //console.log(t);
+      return t;
+    })
+  }
   findAllByUserId(id) {
     return this.axios({
       method: 'get',
@@ -29,7 +42,7 @@ export default class TransactionAPI {
     }).then((response) => {
       const transactions = []
       response.data.forEach((t) => {
-        transactions.push(new Transaction(t.tid, t.fromID, t.toID, t.price, t.purpose, t.reference, t.time, t.verified, t.nameFrom, t.nameTo))
+        transactions.push(new Transaction(t.tid, t.from, t.to, t.price, t.purpose, t.reference, t.time, t.verified, t.nameFrom, t.nameTo))
       })
       return transactions
     })
@@ -46,12 +59,19 @@ export default class TransactionAPI {
       return balance
     })
   }
-  push(transaction) {
+  create(tid, from, to, amount, time, purpose, reference, verified) {
     return this.axios({
       method: 'post',
       url: 'bank/transaction',
       data: {
-        transaction
+        tid,
+        nameFrom: from,
+        nameTo: to,
+        time,
+        price: amount,
+        purpose,
+        reference,
+        verified
       },
       withCredentials: true
     }).then((response) => {
