@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid p-0">
-    <navbar />
+    <navbar :key="$route.fullPath"/>
     <nuxt />
   </div>
 </template>
