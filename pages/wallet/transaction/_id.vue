@@ -4,10 +4,12 @@
       Transaction {{ transactionID }}
     </h1>
     <transaction-list :transactions="transactions"/>
-    <div class="box">
-      Status: 
+    <div class="container-md box">
+      Status:
+      <span v-if="transaction.verified" class="positive"><strong>Verifiziert</strong></span>
+      <span v-else class="negative"><strong>Nicht Verifiziert</strong></span>
     </div>
-    <transaction-item-create :transaction="transaction"/>
+    <transaction-item-create class="container-md" :transaction="transaction"/>
   </div>
 </template>
 

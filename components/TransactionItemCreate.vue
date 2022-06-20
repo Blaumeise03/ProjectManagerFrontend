@@ -1,6 +1,9 @@
 <template>
   <div class="box p-2">
-    <button data-bs-toggle="collapse" data-bs-target="#createForm" class="btn btn-primary" @click="test" aria-expanded="true" aria-controls="#createForm">Neue Transaktion...</button>
+    <button data-bs-toggle="collapse" data-bs-target="#createForm" class="btn btn-primary" @click="test" aria-expanded="true" aria-controls="#createForm">
+      <span v-if="tid != null">Bearbeiten...</span>
+      <span v-else>Neue Transaktion...</span>
+    </button>
 
     <div id="createForm" class="collapse">
       <form class="" @submit.prevent="create">
@@ -35,18 +38,30 @@
           <label for="reference">Referenz:</label>
           <textarea v-model="reference" type="text" class="form-control t-input" id="reference" />
         </div>
+        <div class="toast" id="toast-changeVerify">
+          <div class="toast-header">
+            Transaktion bereits verifiziert!
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+          </div>
+          <div class="toast-body">
+            Diese Transaktion ist bereits verifiziert. Du kannst den Verifikationsstatus ändern, jedoch lehnt der Server die Anfrage ab wenn du keine Administratorberechtigungen hast.
+          </div>
+        </div>
         <div class="form-group form-check form-switch">
           <label for="reference">Verifiziert</label>
-          <input v-model="verified" class="lockedInput form-check-input" type="checkbox" id="verified" name="option-verified" value="verified" onclick="return false;" />
+          <input v-model="verified" class="form-check-input" :class="{lockedInput: verifiedStyle}" type="checkbox" id="verified" name="option-verified" value="verified" @click="verifiedChange" />
         </div>
         <div class="form-group pt-2">
-          <div class="alert alert-warning"><strong>Achtung:</strong> Transaktion ist bereits verifiziert...</div>
+          <div class="alert alert-danger" :class="{hidden: !verifiedLocked}" id="alert-verified"><strong>Achtung:</strong> Transaktion ist bereits verifiziert. Um Daten zu ändern, lege den "Verifiziert"-Schalter um.</div>
+          <div class="alert alert-warning" id="alert-unverified" :class="{hidden: verifiedLocked}"><strong>Hinweis:</strong> Eine Verifizierung ist nur möglich, wenn Du der besitzer der Ausgangskontos bist, oder wenn Du ein Admin bist.</div>
           <button class="btn btn-primary">
             Senden
           </button>
         </div>
       </form>
     </div>
+    <!--Toasts-->
+    
   </div>
 </template>
 
@@ -64,7 +79,9 @@
         purpose: '',
         reference: '',
         time: '',
-        verified: false
+        verified: false,
+        verifiedLocked: false,
+        verifiedStyle: false
       }
     },
     props: {
@@ -101,15 +118,30 @@
         //console.log()
         var date = moment(time.valueAsNumber)
         //console.log(moment.utc())
-        this.$services.transaction.create(this.tid, this.from, this.to, this.amount, date.unix() / 1000, this.purpose, this.reference, this.verified);
-        //console.log(this.playerName);
+        var res = this.$services.transaction.create(this.tid, this.from, this.to, this.amount, date.unix() / 1000, this.purpose, this.reference, this.verified);
+        res.then((r) => {
+          if (r) window.location.reload();
+        });
         //e.preventDefaul();
+      },
+      verifiedChange(e) {
+        //console.log(e)
+        if (this.verifiedLocked) {
+          var toastEl = document.getElementById("toast-changeVerify");
+          var toast = new bootstrap.Toast(toastEl);
+          toast.show();
+          const inputs = document.getElementsByClassName("t-input");
+          this.verifiedStyle = false;
+          for (let i = 0; i < inputs.length; i++) {
+            inputs[i].disabled = false;
+          }
+        }
       },
       changeTime() {
         //console.log("test3:" + this.time);
       },
       test() {
-        console.log("teest");
+        //console.log("teest");
       }
     },
     async fetch() {
@@ -128,17 +160,22 @@
       document.getElementById('time').value = timeString;
       //console.log(timeString);
       const transaction = this.transaction;
-      console.log(transaction);
+      //console.log(transaction);
       if (transaction != null) {
+        this.tid = transaction.tid;
         this.from = transaction.fromName;
         this.to = transaction.toName;
         this.amount = transaction.price;
         this.purpose = transaction.purpose;
         this.reference = transaction.reference;
-        this.time = transaction.time;
+        var time = moment.unix(transaction.time);
+        //console.log(transaction.time)
+        this.time = time.format("YYYY-MM-DD hh:mm");
         this.verified = transaction.verified;
         if (this.verified) {
           const inputs = document.getElementsByClassName("t-input");
+          this.verifiedLocked = true;
+          this.verifiedStyle = true;
           for (let i = 0; i < inputs.length; i++) {
             inputs[i].disabled = true;
           }
@@ -152,5 +189,9 @@
   .lockedInput {
     background-color: #494949 !important;
     border-color: #494949 !important;
+  }
+
+  .hidden {
+      display: none;
   }
 </style>

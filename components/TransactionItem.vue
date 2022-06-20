@@ -1,5 +1,5 @@
 <template>
-  <div class="row transaction-item">
+  <div class="row transaction-item hover" @click="openDetails">
     <div class="row col">
       <div class="col-md mobile-border">
         <div class="mobile-only mobile-bold">Von</div>
@@ -82,6 +82,11 @@
       return {
         negative: this.$route.params.id == this.transaction.fromID
       };
+    },
+    methods: {
+      openDetails() {
+        this.$router.push('transaction/' + this.transaction.tid)
+      }
     }
   };
 </script>
@@ -108,6 +113,9 @@
 
   .mobile-bold {
 
+  }
+  .hover:hover {
+      background-color: lightgray !important;
   }
 
   .transaction-item {
