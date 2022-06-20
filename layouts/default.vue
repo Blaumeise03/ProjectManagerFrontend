@@ -1,5 +1,6 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid p-0">
+    <navbar />
     <nuxt />
   </div>
 </template>
@@ -39,3 +40,13 @@
     text-align: center;
   }
 </style>
+
+<script>
+  import Navbar from '~/components/Navbar.vue'
+
+  export default {
+    components: {
+      Navbar
+    }
+  }
+</script>

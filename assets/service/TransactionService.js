@@ -75,7 +75,9 @@ export default class TransactionAPI {
       },
       withCredentials: true
     }).then((response) => {
-      return response.data
+      return true;
+    }).catch(() => {
+      return false;
     })
   }
 }

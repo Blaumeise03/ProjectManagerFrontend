@@ -13,22 +13,25 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' }
+      //{ rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' }
     ],
     script: [
-      { src: 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', type: 'text/javascript'}
+      //{ src: 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', type: 'text/javascript'}
+      { src: '/bootstrap.bundle.min.js', type: 'text/javascript' }
     ]
   }, 
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    //{ src: '~/assets/bootstrap / mystyle.scss', lang: 'sass'}
+    '@/assets/scss/custom.scss'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/bootstrap.js',
     '~/plugins/services.js',
-    '~/plugins/interceptor.js'
+    '~/plugins/interceptor.js',
+    //{ src: '~/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js', type: 'text/javascript' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -41,11 +44,21 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     '@nuxtjs/proxy',
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
   ],
+
+  module: {
+    rules: [
+      {
+        test: /\.s[ac]ss$/i,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+    ],
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+
   },
 
   /*
@@ -60,4 +73,11 @@ export default {
   proxy: {
     '/api/': 'http://localhost:8081/'
   },
+
+  // use these settings to use custom css
+  /*bootstrapVue: {
+    bootstrapCSS: false,
+    bootstrapVueCSS: false,
+    icons: true,
+  }*/
 }
