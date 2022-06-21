@@ -4,7 +4,7 @@
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <span class="navbar-text pe-2">Navbar text </span>
+      <span class="navbar-text pe-2">{{ userInfo }}</span>
       
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <span class="navbar-text pathLink" v-for="location in loadLocation" :id="location.text">
@@ -47,13 +47,13 @@
         //console.log(res);
         res[res.length - 1].last = true;
         return res;
+      },
+      userInfo() {
+        const user = this.$store.state.user.user
+        //console.log(user.name + ": " + user.mainCharName)
+        //console.log(user)
+        return user.name + ": [" + user.cTag + "] " + user.mainCharName;
       }
-    },
-    methods: {
-
-    },
-    mounted() {
-
     }
   }
 </script>

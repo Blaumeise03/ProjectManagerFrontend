@@ -29,4 +29,23 @@ export default class LoginService {
       return false
     })
   }
+
+  getSessionDetails() {
+    return this.axios({
+      method: 'get',
+      url: 'user/current',
+      data: {}
+    }).then((response) => {
+      return {
+        name: response.data.name,
+        uid: response.data.uid,
+        mainCharName: response.data.mainCharName,
+        mid: response.data.mid,
+        cid: response.data.cid,
+        cTag: response.data.ctag
+      }
+    }).catch(() => {
+      return null
+    })
+  }
 }
