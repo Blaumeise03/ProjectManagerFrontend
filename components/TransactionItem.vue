@@ -85,7 +85,7 @@
     },
     methods: {
       openDetails() {
-        this.$router.push('transaction/' + this.transaction.tid)
+        this.$router.push('/wallet/transaction/' + this.transaction.tid)
       }
     }
   };

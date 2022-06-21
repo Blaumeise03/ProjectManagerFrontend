@@ -34,6 +34,12 @@ export default {
     //{ src: '~/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js', type: 'text/javascript' }
   ],
 
+  router: {
+    extendRoutes(routes, resolve) {
+      //console.log(routes[5].children)
+    }
+  },
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 

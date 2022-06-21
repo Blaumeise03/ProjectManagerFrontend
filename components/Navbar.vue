@@ -8,7 +8,7 @@
       
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <span class="navbar-text pathLink" v-for="location in loadLocation" :id="location.text">
-          <a class="" :href="location.link" :class="{active: location.last}">{{ location.text }}</a><span v-if="!location.last" class="">»</span>
+          <NuxtLink class="" :to="location.link" :class="{active: location.last}">{{ location.text }}</NuxtLink><span v-if="!location.last" class="">»</span>
         </span>
         <ul class="navbar-nav">
           <!--navbar-link v-for="location in loadLocation" :text="location.text" :link="location.link" :last="location.last" :key="location.link" /-->

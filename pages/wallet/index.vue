@@ -6,7 +6,7 @@
     <div class="container-md pb-4">
       <!--transaction-item-create :players="players" :playerName="playerName"/-->
     </div>
-    <div class="container-md box">Kontostände</div>
+    <div class="container-md box">Kontostände [{{ corp.tag }}] {{ corp.name }} (ID: {{ corp.cid }})</div>
     <wallet-list :wallets="wallets" />
   </div>
 </template>
@@ -41,12 +41,15 @@
 
     },
     async asyncData(ctx) {
-      //console.log(ctx.app.store.state.user.user)
+      //console.log("t " + ctx.app.store.state.user.user.cid)
       return {
         corpID: ctx.app.store.state.user.user.cid,
         wallets: await ctx.app.$services.player.findWalletsByCorp(ctx.app.store.state.user.user.cid),
         corp: await ctx.app.$services.corp.findByID(ctx.app.store.state.user.user.cid)
       }
+    },
+    mounted() {
+      console.log(this.corp)
     }
   }
 </script>

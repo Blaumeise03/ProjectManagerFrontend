@@ -14,7 +14,7 @@ export default class CorpService {
       withCredentials: true
     }).then((response) => {
       const c = response.data;
-      return new Corp(c.id, c.tag, c.name);
+      return new Corp(c.cid, c.tag, c.name);
     })
   }
 }

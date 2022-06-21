@@ -40,6 +40,10 @@
       async performLogin() {
         if (await this.$services.login.performLogin(this.username, this.password)) {
           if (this.$route.query.redirect != null) {
+            var u = await this.$services.login.getSessionDetails();
+            if (u != null) {
+              this.$store.commit('user/set', u);
+            }
             this.$router.push(this.$route.query.redirect);
             return;
           }
