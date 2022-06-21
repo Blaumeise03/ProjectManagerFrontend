@@ -1,4 +1,5 @@
 import Player from '~/assets/data/Player.class'
+import Wallet from '~/assets/data/Wallet.class'
 
 export default class PlayerAPI {
   constructor($axios) {
@@ -48,6 +49,23 @@ export default class PlayerAPI {
       })
       //console.log(players)
       return players
+    })
+  }
+
+  findWalletsByCorp(id) {
+    //console.log("w")
+    if (id == null || id == -1) return [];
+    return this.axios({
+      method: 'get',
+      url: 'player/corp/' + id + '/wallet',
+      withCredentials: true
+    }).then((response) => {
+      const wallets = []
+      response.data.forEach((t) => {
+        wallets.push(new Wallet(t.id, t.name, t.verified, t.unverified))
+      })
+      //console.log(players)
+      return wallets;
     })
   }
 }

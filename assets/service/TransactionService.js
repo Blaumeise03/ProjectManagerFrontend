@@ -35,6 +35,8 @@ export default class TransactionAPI {
     })
   }
   findAllByUserId(id) {
+    if (id == undefined || id == null) return [];
+    console.log("t");
     return this.axios({
       method: 'get',
       url: 'bank/transaction/user/' + id,
@@ -48,6 +50,7 @@ export default class TransactionAPI {
     })
   }
   getBalanceByUserId(id) {
+    if (id == undefined || id == null) return [];
     return this.axios({
       method: 'get',
       url: 'bank/transaction/user/' + id + "/sum",

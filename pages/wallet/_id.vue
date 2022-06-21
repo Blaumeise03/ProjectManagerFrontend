@@ -54,17 +54,42 @@
     computed: {
       isNegativeBal: function () {
         //console.log(this.$route.params.id + " " + this.transaction.fromID)
+        if (this.balance == undefined) return null;
         return this.balance < 0
       },
       getPriceString: function () {
+        if (this.balance == undefined) return null;
         return this.balance.toLocaleString('en-US')
       }
     },
+    mounted() {
+      //console.log(this)
+      //if (this.$router.params.id == undefined) {
+        //console.log(ctx.app.router)
+        //console.warn("No wallet id found, redirecting to /wallets")
+        //this.$router.push("/wallets")
+        //return;
+      //}
+      //console.log("teeest")
+      //console.log(this)
+      
+    },
     async asyncData(ctx) {
-      //console.log("t:" + Number(ctx.route.params.id));
+      
+      //console.log("t: wallet_id");
       const transactions = await ctx.app.$services.transaction.findAllByUserId(ctx.route.params.id);
       //console.log(ctx.app.$services.transaction.getVerified(transactions));
       const player = await ctx.app.$services.player.findById(ctx.route.params.id);
+      if (ctx.route.params.id == undefined) {
+        //console.log("tee");
+        return {
+          transactionsVerified: [],
+          transactionsUnverified: [],
+          balance: -1,
+          players: [],
+          playerName: 'Error'
+        };
+      };
       return {
         playerID: Number(ctx.route.params.id),
         transactionsVerified: await ctx.app.$services.transaction.getVerified(transactions),

@@ -43,6 +43,7 @@
       
     },
     async asyncData(ctx) {
+      console.log("t: transaction_id");
       const t = await ctx.$services.transaction.findById(ctx.route.params.id);
       return {
         transactionID: Number(ctx.route.params.id),
