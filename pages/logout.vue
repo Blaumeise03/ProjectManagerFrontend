@@ -3,12 +3,12 @@
     <h1 class="title">
       Logout
     </h1>
-    <form @submit.prevent="performLogout" action="post">
-      <button type="submit">
+    <form @submit.prevent="performLogout" action="post" class="logout-form">
+      <button type="submit" class="logout-button">
         Logout
       </button>
     </form>
-    <div id="success"></div>
+    <h1 class="pt-5 text-success" id="success"></h1>
   </div>
 </template>
 <script>
@@ -32,13 +32,13 @@
   }
 </script>
 <style>
-  form {
+  .logout-form {
     width: 200px;
     margin: auto;
     text-align: center;
   }
 
-  input {
+  .logout-input {
     width: 100%;
     border: none;
     border-bottom: 1px black solid;
@@ -53,7 +53,7 @@
     outline: none;
   }
 
-  button {
+  .logout-button {
     width: 100%;
     height: 50px;
     border: none;
