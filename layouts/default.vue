@@ -1,9 +1,62 @@
 <template>
   <div class="container-fluid p-0">
-    <navbar :key="$route.fullPath"/>
+    <error-modal :error="error" />
+    <navbar :key="$route.fullPath" />
     <nuxt />
   </div>
 </template>
+
+<script>
+  import Navbar from '~/components/Navbar.vue'
+  import ErrorModal from '~/components/ErrorModal.vue'
+  var loadedError = null;
+
+  export default {
+    components: {
+      Navbar,
+      ErrorModal
+    },
+    props: {
+
+    },
+    data() {
+      return {
+        error: null,
+      }
+    },
+    created() {
+      //console.log("receiver1 online")
+      
+      this.$nuxt.$eventHub.$on('axios-error', (error) => {
+        this.error = error;
+        //console.log("receive1")
+      });
+      this.$nuxt.$eventHub.$on('general-error', (error) => {
+        this.error = error;
+      })
+
+      if (loadedError != null) {
+        this.$nuxt.$eventHub.$emit('axios-error', loadedError)
+        //this.error = loadedError;
+        //console.log("send2")
+      }
+    },
+    mounted() {
+      //console.log(this.loadedError)
+    },
+    middleware(ctx) {
+      /*console.log(ctx.route)
+      ctx.$eventHub.$on('axios-error', (error) => {
+        loadedError = error;
+        //console.log("receive2")
+      });
+      ctx.$eventHub.$on('general-error', (error) => {
+        loadedError = error;
+      })*/
+    }
+  }
+</script>
+
 
 <style>
   html {
@@ -41,12 +94,3 @@
   }
 </style>
 
-<script>
-  import Navbar from '~/components/Navbar.vue'
-
-  export default {
-    components: {
-      Navbar
-    }
-  }
-</script>

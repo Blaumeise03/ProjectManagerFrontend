@@ -5,6 +5,7 @@ export default class TransactionAPI {
     this.axios = $axios
   }
 
+  //Filters the array for verified transactions
   getVerified(transactions) {
     const verified = [];
     transactions.forEach((t) => {
@@ -13,6 +14,7 @@ export default class TransactionAPI {
     return verified;
   }
 
+  //Filters the array for unverified transactions
   getUnverified(transactions) {
     const unverified = [];
     transactions.forEach((t) => {
@@ -20,23 +22,22 @@ export default class TransactionAPI {
     });
     return unverified;
   }
+
+  //Returns the transaction with the given ID
   findById(id) {
-    //console.log(id);
     return this.axios({
       method: 'get',
       url: 'bank/transaction/' + id,
       withCredentials: true
     }).then((response) => {
       const d = response.data;
-      //console.log(response);
-      const t = new Transaction(d.tid, d.from, d.to, d.price, d.purpose, d.reference, d.time, d.verified, d.nameFrom, d.nameTo);
-      //console.log(t);
-      return t;
+      return new Transaction(d.tid, d.from, d.to, d.price, d.purpose, d.reference, d.time, d.verified, d.nameFrom, d.nameTo);;
     })
   }
+
+  //Returns an array of transactions with the given user ID
   findAllByUserId(id) {
     if (id == undefined || id == null) return [];
-    console.log("t");
     return this.axios({
       method: 'get',
       url: 'bank/transaction/user/' + id,
@@ -49,6 +50,8 @@ export default class TransactionAPI {
       return transactions
     })
   }
+
+  //Returns the total balance of a given user ID
   getBalanceByUserId(id) {
     if (id == undefined || id == null) return [];
     return this.axios({
@@ -62,6 +65,8 @@ export default class TransactionAPI {
       return balance
     })
   }
+
+  //Pushes a new or a changed transaction into the server
   create(tid, from, to, amount, time, purpose, reference, verified) {
     return this.axios({
       method: 'post',

@@ -39,16 +39,17 @@
     methods: {
       async performLogin() {
         if (await this.$services.login.performLogin(this.username, this.password)) {
+          var u = await this.$services.login.getSessionDetails();
+          if (u != null) {
+            this.$store.commit('user/set', u);
+          }
+          //console.log(this.$store.state)
           if (this.$route.query.redirect != null) {
-            var u = await this.$services.login.getSessionDetails();
-            if (u != null) {
-              this.$store.commit('user/set', u);
-            }
             this.$router.push(this.$route.query.redirect);
             return;
           }
           //console.log(this.$route)
-          this.$router.push('todo')
+          this.$router.push('/')
         } else {
           this.username = ''
           this.password = ''

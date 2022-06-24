@@ -10,6 +10,7 @@
       <span v-else class="negative"><strong>Nicht Verifiziert</strong></span>
     </div>
     <transaction-item-create class="container-md" :transaction="transaction"/>
+    
   </div>
 </template>
 
@@ -44,11 +45,19 @@
     },
     async asyncData(ctx) {
       //console.log("t: transaction_id");
-      const t = await ctx.$services.transaction.findById(ctx.route.params.id);
-      return {
-        transactionID: Number(ctx.route.params.id),
-        transaction: t,
-        transactions: [t]
+      try {
+        const t = await ctx.$services.transaction.findById(ctx.route.params.id);
+        return {
+          transactionID: Number(ctx.route.params.id),
+          transaction: t,
+          transactions: [t]
+        }
+      } catch (error) {
+        return {
+          transactionID: -1,
+          transaction: {transactionID: null},
+          transactions: []
+        }
       }
     }
   }

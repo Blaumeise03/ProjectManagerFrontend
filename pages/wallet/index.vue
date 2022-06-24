@@ -25,8 +25,12 @@
         corpID: null,
         corp: {
           type: Object,
-          defaul() {
-            return null;
+          default() {
+            return {
+              tag: 'N/A',
+              name: 'N/A',
+              cid: null
+            };
           }
         },
         wallets: {
@@ -40,17 +44,29 @@
     computed: {
 
     },
+    validate({ params, query, store, redirect, app }) {
+      if (store.state.user.user.cid == null) {
+        app.$eventHub.$emit('general-error', {message: "No Corp found/not logged in!"})
+        redirect('/');
+        //return false;
+      };
+      return true;
+    },
     async asyncData(ctx) {
       //console.log("t " + ctx.app.store.state.user.user.cid)
-      return {
-        corpID: ctx.app.store.state.user.user.cid,
-        wallets: await ctx.app.$services.player.findWalletsByCorp(ctx.app.store.state.user.user.cid),
-        corp: await ctx.app.$services.corp.findByID(ctx.app.store.state.user.user.cid)
+      try {
+        return {
+          corpID: ctx.app.store.state.user.user.cid,
+          wallets: await ctx.app.$services.player.findWalletsByCorp(ctx.app.store.state.user.user.cid),
+          corp: await ctx.app.$services.corp.findByID(ctx.app.store.state.user.user.cid)
+        }
+      } catch (error) {
+
       }
     },
     mounted() {
       console.log(this.corp)
-    }
+    },
   }
 </script>
 <style lang="scss">

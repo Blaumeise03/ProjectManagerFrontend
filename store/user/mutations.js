@@ -8,6 +8,17 @@ export default {
       cid: cid,
       cTag: cTag
     }
-    //console.log(state.user)
+    //console.log(state)
   },
+
+  setDefault(state) {
+    Object.assign(state.user, {
+      name: "N/A",
+      uid: null,
+      mainCharName: "N/A",
+      mid: null,
+      cid: null,
+      cTag: null
+    })
+  }
 }

@@ -11,3 +11,9 @@
 
 @import '~/node_modules/bootstrap/scss/bootstrap.scss';
 @import '~/node_modules/bootstrap-icons/font/bootstrap-icons.css';
+
+.code {
+  font-family: 'Courier New', monospace;
+  font-size: 10pt;
+  background-color: #efefef;
+}

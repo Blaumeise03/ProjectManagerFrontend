@@ -1,5 +1,5 @@
 export default {
   getUser (state) {
-    return state.user
+    return state.user;
   }
 }

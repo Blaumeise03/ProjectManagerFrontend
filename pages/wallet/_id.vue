@@ -19,6 +19,7 @@
 <script>
   import TransactionList from '~/components/TransactionList.vue'
   import TransactionItemCreate from '~/components/TransactionItemCreate.vue'
+  import devalue from '@nuxt/devalue';
 
   export default {
     components: {
@@ -28,10 +29,12 @@
     data() {
       return {
         transactionsVerified: {
-          type: Array
+          type: Array,
+          default: []
         },
         transactionsUnverified: {
-          type: Array
+          type: Array,
+          default: []
         },
         playerID: {
           type: Number,
@@ -41,7 +44,10 @@
           type: Boolean
         },
         players: {
-          type: Array
+          type: Array,
+          default() {
+            return [];
+          }
         },
         playerName: {
           tyoe: String,
@@ -75,28 +81,31 @@
       
     },
     async asyncData(ctx) {
-      
       //console.log("t: wallet_id");
-      const transactions = await ctx.app.$services.transaction.findAllByUserId(ctx.route.params.id);
-      //console.log(ctx.app.$services.transaction.getVerified(transactions));
-      const player = await ctx.app.$services.player.findById(ctx.route.params.id);
-      if (ctx.route.params.id == undefined) {
-        //console.log("tee");
-        return {
-          transactionsVerified: [],
-          transactionsUnverified: [],
-          balance: -1,
-          players: [],
-          playerName: 'Error'
+      try {
+        const transactions = await ctx.app.$services.transaction.findAllByUserId(ctx.route.params.id);
+        //console.log(ctx.app.$services.transaction.getVerified(transactions));
+        const player = await ctx.app.$services.player.findById(ctx.route.params.id);
+        if (ctx.route.params.id == undefined) {
+          //console.log("tee");
+          return {
+            transactionsVerified: [],
+            transactionsUnverified: [],
+            balance: -1,
+            players: [],
+            playerName: 'Error'
+          };
         };
-      };
-      return {
-        playerID: Number(ctx.route.params.id),
-        transactionsVerified: await ctx.app.$services.transaction.getVerified(transactions),
-        transactionsUnverified: await ctx.app.$services.transaction.getUnverified(transactions),
-        balance: await ctx.app.$services.transaction.getBalanceByUserId(ctx.route.params.id),
-        players: await ctx.app.$services.player.findAllByCorpID(player.corpID),
-        playerName: player.name
+        return {
+          playerID: Number(ctx.route.params.id),
+          transactionsVerified: await ctx.app.$services.transaction.getVerified(transactions),
+          transactionsUnverified: await ctx.app.$services.transaction.getUnverified(transactions),
+          balance: await ctx.app.$services.transaction.getBalanceByUserId(ctx.route.params.id),
+          players: await ctx.app.$services.player.findAllByCorpID(player.corpID),
+          playerName: player.name
+        }
+      } catch (error) {
+        
       }
     }
   }

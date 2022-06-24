@@ -56,25 +56,36 @@
     },
     computed: {
       getPriceString: function () {
-        return this.transaction.price.toLocaleString('en-US')
+        if (this.transaction.price != undefined)
+          return this.transaction.price.toLocaleString('en-US');
+        return null;
       },
       getTimeUTC: function () {
         var newDate = new Date();
-        newDate.setTime(this.transaction.time * 1000);
-        return newDate.toLocaleString("de-DE");
+        if (this.transaction.time != undefined) {
+          newDate.setTime(this.transaction.time * 1000);
+          return newDate.toLocaleString("de-DE");
+        }
+        return null;
       },
       isNegative: function () {
         //console.log(this.$route.params.id + " " + this.transaction.fromID)
         return this.$route.params.id == this.transaction.fromID
       },
       getFrom: function () {
-        if (this.transaction.fromID == -1) return "N/A";
-        return this.transaction.fromName;
+        if (this.transaction != undefined) {
+          if (this.transaction.fromID == -1) return "N/A";
+          return this.transaction.fromName;
+        }
+        return null;
       },
       getTo: function () {
         //console.log(this.transaction)
-        if (this.transaction.toID == -1) return "N/A";
-        return this.transaction.toName;
+        if (this.transaction != undefined) {
+          if (this.transaction.toID == -1) return "N/A";
+          return this.transaction.toName;
+        }
+        return null;
       }
     },
     data() {
@@ -85,7 +96,9 @@
     },
     methods: {
       openDetails() {
-        this.$router.push('/wallet/transaction/' + this.transaction.tid)
+        if (this.transaction != undefined) {
+          this.$router.push('/wallet/transaction/' + this.transaction.tid)
+        }
       }
     }
   };
@@ -112,10 +125,10 @@
   }
 
   .mobile-bold {
-
   }
+
   .hover:hover {
-      background-color: lightgray !important;
+    background-color: lightgray !important;
   }
 
   .transaction-item {

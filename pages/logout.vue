@@ -23,6 +23,7 @@
       async performLogout() {
         let successDiv = document.getElementById("success");
         if (await this.$services.login.performLogout()) {
+          this.$store.commit('user/setDefault');
           successDiv.textContent = "Logout successfull";
         } else {
           successDiv.textContent = "Logout failed";

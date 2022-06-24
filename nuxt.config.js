@@ -19,7 +19,12 @@ export default {
       //{ src: 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', type: 'text/javascript'}
       { src: '/bootstrap.bundle.min.js', type: 'text/javascript' }
     ]
-  }, 
+  },
+
+  env: {
+    testEnv: process.env.TEST_ENV || 0,
+    nuxtEnvDevalueLogLimit: process.env.NUXT_ENV_DEVALUE_LOG_LIMIT || 0
+  },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
@@ -51,6 +56,7 @@ export default {
   modules: [
     '@nuxtjs/proxy',
     '@nuxtjs/axios',
+    '@nuxtjs/dotenv',
   ],
 
   module: {

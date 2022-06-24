@@ -27,9 +27,13 @@
         <span class="ps-8 me-auto"></span>
 
         <div class="d-flex">
-          <div class="navbar-text me-2">{{ userInfo }}</div>
-          <NuxtLink to="/logout" class="">
+          <div v-if="!isLoggedOff" class="navbar-text me-2">{{ userInfo }}</div>
+          <div v-else class="navbar-text me-2">Bitte Anmelden</div>
+          <NuxtLink v-if="!isLoggedOff" to="/logout" class="" >
             <button class="btn btn-primary" type="button">Logout</button>
+          </NuxtLink>
+          <NuxtLink v-else to="/login" class="" >
+            <button class="btn btn-primary" type="button">Login</button>
           </NuxtLink>
         </div>
       </div>
@@ -47,12 +51,7 @@
     },
     data() {
       return {
-        user: {
-          type: Object,
-          default() {
-            return null;
-          }
-        }
+
       }
     },
     computed: {
@@ -79,14 +78,22 @@
         return this.$router.currentRoute.name == 'index';
       },
       userInfo() {
-        const user = this.$store.state.user.user
+        const user = this.$store.state.user.user;
         //console.log(user.name + ": " + user.mainCharName)
         //console.log(user)
         return user.name + ": [" + user.cTag + "] " + user.mainCharName;
+      },
+      user() {
+        //console.log("tt:" + this.$store.state.user.user.uid)
+        return this.$store.state.user.user;
+      },
+      isLoggedOff() {
+        //console.log("tt2:" + (this.user.uid == null))
+        return this.user.uid == null;
       }
     },
     mounted() {
-      this.user = this.$store.state.user.user;
+      
     }
   }
 </script>
