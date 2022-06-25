@@ -9,7 +9,6 @@
 <script>
   import Navbar from '~/components/Navbar.vue'
   import ErrorModal from '~/components/ErrorModal.vue'
-  var loadedError = null;
 
   export default {
     components: {
@@ -34,12 +33,6 @@
       this.$nuxt.$eventHub.$on('general-error', (error) => {
         this.error = error;
       })
-
-      if (loadedError != null) {
-        this.$nuxt.$eventHub.$emit('axios-error', loadedError)
-        //this.error = loadedError;
-        //console.log("send2")
-      }
     },
     mounted() {
       //console.log(this.loadedError)

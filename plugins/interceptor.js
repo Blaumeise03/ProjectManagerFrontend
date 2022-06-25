@@ -7,14 +7,17 @@ export default (ctx, inject) => {
     //console.log(error.response)
     const errorMsg = error.response ? error.response.data.message : 'Unknown error'
     const errorCode = error.response ? parseInt(error.response.status) : -1
-    if (errorCode === 401 && ctx.route.name != "login") {
+    if (errorCode == 401 && ctx.route.name != "login") {
       //console.log(errorCode + ' - ' + errorMsg + ' on: ' + ctx.route.path)
       ctx.redirect('/login?redirect=' + ctx.route.path);
+    } else if (errorCode == 401 && ctx.route.name == "login") {
+      //Ingnore error
     } else {
       if (process.client) {
         ctx.app.$eventHub.$emit('axios-error', error);
       } else {
-        //console.log("erroooor2")
+        console.log("erroooor2 " + errorCode + " on " + ctx.route.name)
+        console.log(ctx.route.name != "login")
         //ctx.redirect('/axiosError', );
         console.warn(error)
         if (errorMsg == undefined) {
