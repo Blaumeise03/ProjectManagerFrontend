@@ -35,7 +35,10 @@
       })
     },
     mounted() {
-      //console.log(this.loadedError)
+      //console.log("default.vue mounted")
+    },
+    updated() {
+      //console.log("default.vue updated");
     },
     middleware(ctx) {
       /*console.log(ctx.route)

@@ -1,24 +1,30 @@
 <template>
   <div class="container box p-4 mt-5">
     <h1>Project Manager</h1>
-    <div class="row">
+    <div class="d-flex flex-wrap">
 
-      <div class="col-md link-btn p-0">
+      <div class="flex-fill link-btn p-0">
         <NuxtLink :to="'/wallet/' + userMID">
-          <div class="icon bi-wallet"></div>
+          <div class="icon bi-wallet p-4"></div>
           <h1>Wallet</h1>
         </NuxtLink>
       </div>
-      <div class="col-md link-btn p-0">
+      <div class="flex-fill link-btn p-0">
         <NuxtLink to="/wallet/">
-          <div class="icon bi-building"></div>
+          <div class="icon bi-building p-4"></div>
           <h1>Corp</h1>
         </NuxtLink>
       </div>
-      <div class="col-md link-btn p-0">
+      <div class="flex-fill link-btn p-0">
         <NuxtLink to="/wallet/transaction">
-          <div class="icon bi-pen"></div>
+          <div class="icon bi-pen p-4"></div>
           <h1>Neu</h1>
+        </NuxtLink>
+      </div>
+      <div class="flex-fill link-btn p-0">
+        <NuxtLink to="/data/item">
+          <div class="icon bi bi-clipboard2-data p-4"></div>
+          <h1>Items</h1>
         </NuxtLink>
       </div>
     </div>

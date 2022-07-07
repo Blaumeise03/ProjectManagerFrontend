@@ -66,7 +66,7 @@
 </template>
 
 <script>
-  import Transaction from "../assets/data/Transaction.class";
+  import Transaction from "~/assets/data/Transaction.class";
   import moment from 'moment';
 
   export default {
@@ -118,7 +118,7 @@
         //console.log()
         var date = moment(time.valueAsNumber)
         //console.log(moment.utc())
-        var res = this.$services.transaction.create(this.tid, this.from, this.to, this.amount, date.unix() / 1000, this.purpose, this.reference, this.verified);
+        var res = this.$services.transaction.create(this.tid, this.from, this.to, this.amount, date.unix(), this.purpose, this.reference, this.verified);
         res.then((r) => {
           if (r) window.location.reload();
         });
@@ -144,24 +144,15 @@
         //console.log("teest");
       }
     },
-    async fetch() {
-      const services = this.$root.$options.$services
-      //console.log("i:" + this.playerID)
-      const player = await services.player.findById(this.playerID);
-      //console.log("p:" + player);
-      return {
-        //players: await services.player.findAllByCorpID(player.corpID)
-      }
-    },
     mounted() {
       //console.log("test");
       var timeString = new Date().toISOString();
-      timeString = timeString.substring(0, timeString.length - 8);
-      document.getElementById('time').value = timeString;
+      this.time = timeString.substring(0, timeString.length - 8);
+      //document.getElementById('time').value = timeString;
       //console.log(timeString);
       const transaction = this.transaction;
-      //console.log(transaction);
-      if (transaction != null) {
+      //console.log(transaction.tid);
+      if (transaction != null && transaction.tid != undefined) {
         this.tid = transaction.tid;
         this.from = transaction.fromName;
         this.to = transaction.toName;
@@ -169,8 +160,8 @@
         this.purpose = transaction.purpose;
         this.reference = transaction.reference;
         var time = moment.unix(transaction.time);
-        //console.log(transaction.time)
-        this.time = time.format("YYYY-MM-DD hh:mm");
+        this.time = time.format("YYYY-MM-DD HH:mm");
+        console.log(this.time)
         this.verified = transaction.verified;
         if (this.verified) {
           const inputs = document.getElementsByClassName("t-input");

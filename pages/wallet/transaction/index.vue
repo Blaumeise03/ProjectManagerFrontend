@@ -22,7 +22,7 @@
         transaction: {
           type: Object,
           default() {
-            return null
+            return null;
           }
         }
       }

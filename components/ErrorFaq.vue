@@ -76,6 +76,20 @@
 
     <div class="card">
       <div class="card-header">
+        <a class="btn" data-bs-toggle="collapse" href="#code504">
+          Statuscode 504 Gateway Timeout
+        </a>
+      </div>
+      <div id="code504" class="collapse" :class="{show: code==504}" data-bs-parent="#errorFaqAccordion">
+        <div class="card-body">
+          Dieser Fehler zeigt ein Fehler im Proxy/Gateway an. Ein möglicher Grund ist, dass der API Server
+          nicht erreichbar ist. Wenn der Fehler bestehen bleibt, informieren Sie bitte einen Administrator.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
         <a class="btn" data-bs-toggle="collapse" href="#other">
           Weitere Fehlercodes
         </a>

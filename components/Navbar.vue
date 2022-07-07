@@ -51,7 +51,7 @@
     },
     data() {
       return {
-
+        
       }
     },
     computed: {
@@ -93,7 +93,10 @@
       }
     },
     mounted() {
-      
+      //console.log("Navbar.vue mounted");
+    },
+    updated() {
+      //console.log("Navbar.vue updated");
     }
   }
 </script>
