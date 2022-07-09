@@ -3,6 +3,32 @@
     <error-modal :error="error" />
     <navbar :key="$route.fullPath" />
     <nuxt />
+    <div class="modal" id="cookieConsent">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Diese Website verwendet Cookies</h4>
+            <!--button type="button" class="btn-close"></!--button-->
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            Diese Website nutzt funktionelle Cookies. Sollten Sie ein Problem damit haben, können sie hier eine Löschung durchführen und werden automatisch
+            weitergeleitet. Sollte die Weiterleitung nicht funktionieren, schließen sie die Seite bitte eigenständig. Wenn sie die Seite nutzen wollen, müssen
+            sie die Cookies akzeptieren.
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" @click="acceptCookies">Akzeptieren</button>
+            <button type="button" class="btn btn-danger" @click="declineCookies">Ablehnen</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -21,34 +47,64 @@
     data() {
       return {
         error: null,
+        cookieModal: null,
       }
     },
     created() {
-      //console.log("receiver1 online")
-      
       this.$nuxt.$eventHub.$on('axios-error', (error) => {
         this.error = error;
-        //console.log("receive1")
+
       });
       this.$nuxt.$eventHub.$on('general-error', (error) => {
         this.error = error;
       })
     },
+    methods: {
+      setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        let expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;sameSite=Lax";
+      },
+      getCookie(cname) {
+        let name = cname + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return null;
+      },
+      acceptCookies() {
+        this.setCookie("cookiesAccepted", true, 30);
+        this.cookieModal.hide();
+      },
+      declineCookies() {
+        document.cookie.split(";").forEach(function (c) {
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+        window.location.href = "http://www.google.com";
+      }
+    },
     mounted() {
-      //console.log("default.vue mounted")
+      let cookieConsent = this.getCookie("cookiesAccepted");
+      this.cookieModal = new bootstrap.Modal(document.getElementById('cookieConsent'), { backdrop: false, keyboard: false });
+      //console.log(cookieModal);
+      if (!cookieConsent) {
+        this.cookieModal.show();
+      }
+
     },
     updated() {
-      //console.log("default.vue updated");
+
     },
     middleware(ctx) {
-      /*console.log(ctx.route)
-      ctx.$eventHub.$on('axios-error', (error) => {
-        loadedError = error;
-        //console.log("receive2")
-      });
-      ctx.$eventHub.$on('general-error', (error) => {
-        loadedError = error;
-      })*/
+
     }
   }
 </script>
