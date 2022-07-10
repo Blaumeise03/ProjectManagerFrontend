@@ -31,12 +31,6 @@
         default() {
           return [];
         }
-      },
-      ressources: {
-        type: Array,
-        default() {
-          return [];
-        }
       }
     },
     data() {
@@ -48,6 +42,36 @@
     methods: {
       getEffi() {
         return (Math.round(this.efficiency * 10000) / 100).toFixed(0) + '%'
+      }
+    },
+    computed: {
+      ressources() {
+        var res = [];
+        for (let i of this.items) {
+          if (i.blueprint && i.blueprint.baseCost) {
+            for (let b of i.blueprint.baseCost) {
+              let found = false;
+              for (let r of res) {
+                if (r.id == b.itemID) {
+                  found = true;
+                  break;
+                }
+              }
+              if (!found) {
+                res.push({
+                  id: b.itemID,
+                  name: b.itemName
+                });
+              }
+            }
+          }
+        }
+        return res;
+      }
+    },
+    watch: {
+      item: {
+        deep: true
       }
     },
     mounted() {

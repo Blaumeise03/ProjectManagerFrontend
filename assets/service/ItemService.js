@@ -101,13 +101,13 @@ export default class ItemApi {
       url: 'item/' + item.itemID + '/blueprint',
       withCredentials: true
     }).then((response) => {
-      item.baseCost = {};
-      item.stationFees = response.data.stationFees;
-      item.resultQuantity = response.data.resultQuantity;
+      item.blueprint = {};
+      item.blueprint.baseCost = [];
+      item.blueprint.stationFees = response.data.stationFees;
+      item.blueprint.resultQuantity = response.data.resultQuantity;
       response.data.baseCost.forEach((d) => {
-        item.baseCost[d.item] = d.quantity;
+        item.blueprint.baseCost[d.item] = d.quantity;
       });
-
       return item;
     })
   }
@@ -122,6 +122,7 @@ export default class ItemApi {
     if (data.blueprint != null) {
       this.parseBlueprint(item, data.blueprint)
     }
+    //console.log(data)
     return item;
   }
 
@@ -144,17 +145,17 @@ export default class ItemApi {
       itemName: item.name,
       itemType: item.type
     };
-    if (item.baseCost != null) {
+    if (item.blueprint != null) {
       res.blueprint = {};
       res.blueprint.baseCost = [];
-      item.baseCost.forEach((b) => {
+      item.blueprint.baseCost.forEach((b) => {
         res.blueprint.baseCost.push({
           item: b.itemID,
           quantity: b.quantity
         });
       });
-      res.blueprint.resultQuantity = item.resultQuantity;
-      res.blueprint.stationFees = item.stationFees;
+      res.blueprint.resultQuantity = item.blueprint.resultQuantity;
+      res.blueprint.stationFees = item.blueprint.stationFees;
     }
     if (item.prices != null) {
       res.prices = [];
@@ -170,15 +171,16 @@ export default class ItemApi {
   }
 
   parseBlueprint(item, bp) {
-    item.baseCost = [];
+    item.blueprint = {};
+    item.blueprint.baseCost = [];
     bp.baseCost.forEach((b) => {
-      item.baseCost.push({
+      item.blueprint.baseCost.push({
         itemID: b.item,
         itemName: b.itemName,
         quantity: b.quantity
       });
     });
-    item.resultQuantity = bp.resultQuantity;
-    item.stationFees = bp.stationFees;
+    item.blueprint.resultQuantity = bp.resultQuantity;
+    item.blueprint.stationFees = bp.stationFees;
   }
 }

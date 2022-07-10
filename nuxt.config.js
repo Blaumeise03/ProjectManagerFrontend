@@ -83,8 +83,11 @@ export default {
     prefix: '/api/'
   },
   proxy: {
-    '/api/': 'http://localhost:8081/'
+    '/api/': 'http://192.168.0.39:8081/'
   },
+  server: {
+    host: '0.0.0.0' // default: localhost
+  }
 
   // use these settings to use custom css
   /*bootstrapVue: {

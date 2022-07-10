@@ -48,8 +48,8 @@
         return -1;
       },
       getRes(item, res) {
-        if (item.baseCost != null) {
-          for (const c of item.baseCost) {
+        if (item.blueprint != null) {
+          for (const c of item.blueprint.baseCost) {
             if(c.itemID == res)
               return c.quantity / 1.5 * this.efficiency;
           }

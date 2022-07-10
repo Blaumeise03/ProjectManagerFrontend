@@ -4,9 +4,23 @@ export default class Item {
     this.name = name;
     this.type = type;
     this.prices = [];
-    this.baseCost = [];
-    this.resultQuantity = null;
-    this.stationFees = null;
+    /*
+     * Blueprint-Object:
+     * resultQuantity: Number,
+     * stationFees: Number,
+     * baseCost: [
+     *   {
+     *    itemID: Number,
+     *    itemName: String,
+     *    quantity: Number
+     *   }
+     * ]
+     */
+    this.blueprint = null;
+;
+    //this.baseCost = [];
+    //this.resultQuantity = null;
+    //this.stationFees = null;
   }
 
   getPrice(type) {

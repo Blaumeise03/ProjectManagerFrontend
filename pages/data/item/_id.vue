@@ -2,7 +2,7 @@
   <div>
     <h1>{{ item.name }}</h1>
     <item-edit :item="item" :itemNames="itemNames"/>
-    <item-list :items="[item]" :ressources="ressources" />
+    <item-list :items="[item]" />
   </div>
 </template>
 
@@ -42,11 +42,13 @@
     async asyncData(ctx) {
       var item = await ctx.$services.item.findFullById(ctx.route.params.id)
       const res = [];
-      for (const r of item.baseCost) {
-        res.push({
-          id: r.itemID,
-          name: r.itemName
-        });
+      if (item.blueprint != undefined && item.blueprint != null) {
+        for (const r of item.blueprint.baseCost) {
+          res.push({
+            id: r.itemID,
+            name: r.itemName
+          });
+        }
       }
       //console.log(item)
       try {

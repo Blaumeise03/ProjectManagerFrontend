@@ -4,18 +4,24 @@
       <span>Item</span>
     </button>
 
-    <div id="editItemForm" class="collapse">
-      <form class="" @submit.prevent="create">
+    <div id="editItemForm" class="collapse ">
+      <form class="" :class="{'was-validated': unsavedChanges}" @submit.prevent="create">
+        <!--General Data-->
         <h3>Grunddaten</h3>
         <div class="form-group row">
+          <!--Item ID-->
           <div class="col-sm-4">
             <label for="itemID">ID:</label>
-            <input v-model.number="item.itemID" type="number" class="form-control" id="itemID" />
+            <input v-model.number="item.itemID" type="number" class="form-control" id="itemID" disabled="true" />
+            <div class="invalid-feedback">Muss eine ganze Zahl sein</div>
           </div>
+          <!--Item Name-->
           <div class="col-sm-4">
             <label for="itemName">Name: </label>
-            <input v-model="item.name" type="text" class="form-control" id="itemName" />
+            <input v-model="item.name" type="text" class="form-control" id="itemName" required pattern="[a-zA-Z0-9]+( *[a-zA-Z0-9]+)*" />
+            <div class="invalid-feedback">Nur Buchstaben, Zahlen und Leerzeichen erlaubt</div>
           </div>
+          <!--Item Type-->
           <div class="col-sm-4">
             <label for="itemType" class="">Typ: </label>
             <select v-model="item.type" type="text" class="form-select" id="itemType">
@@ -23,46 +29,58 @@
             </select>
           </div>
         </div>
-
-        <h3>Blueprint</h3>
-        <div class="form-group row">
-          <div class="col-sm-6">
-            <label for="itemResQ">Menge pro BP:</label>
-            <input v-model.number="item.resultQuantity" min="0" type="number" class="form-control t-input" id="itemResQ" />
-          </div>
-          <div class="col-sm-6">
-            <label for="itemFees" class="">Stationsgebühren: </label>
-            <input v-model.number="item.stationFees" min="0" type="number" class="form-control t-input" id="itemFees" />
-          </div>
+        <!--Start of Blueprint-->
+        <div class="form-check form-switch">
+          <input class="form-check-input" v-model.boolean="hasBp" type="checkbox" id="hasBp" name="blueprint" @change="changeBp">
+          <label class="form-check-label" for="hasBp">Blueprint</label>
         </div>
-        <h4>Blueprint Items</h4>
-        <div class="">
-          <div v-for="c in item.baseCost">
-            <label :for="'itemBp-' + c.itemID">{{ c.itemName }}</label>
-            <div class="input-group">
-              <button class="btn btn-danger" @click="deleteCost(c.itemID)"><i class="bi bi-trash" /></button>
-              <input v-model.number="item.baseCost[getResIndex(c.itemID)].quantity" min="0" type="number" class="form-control" :id="'itemBp-' + c.itemID" />
+        <div id="blueprintInput" v-if="item.blueprint">
+          <div class="form-group row">
+            <h3><button type="button" class="btn btn-danger me-2" @click="deleteBp"><i class="bi bi-trash"></i></button>Blueprint</h3>
+            <div class="col-sm-6">
+              <label for="itemResQ">Menge pro BP:</label>
+              <input v-model.number="item.blueprint.resultQuantity" min="1" type="number" class="form-control t-input" id="itemResQ" required pattern="[0-9]+" />
+              <div class="invalid-feedback">Ganze Zahl größer als 0 erwartet</div>
+            </div>
+            <div class="col-sm-6">
+              <label for="itemFees" class="">Stationsgebühren: </label>
+              <input v-model.number="item.blueprint.stationFees" min="0" type="number" class="form-control t-input" id="itemFees" required pattern="[0-9]+" />
+              <div class="invalid-feedback">Ganze Zahl erwartet</div>
             </div>
           </div>
-          <div class="pt-4">
-            <button class="btn" :class="[newItemVis? 'btn-secondary' : 'btn-success']" data-bs-toggle="collapse" data-bs-target="#addBpItem" @click="toggleNewItemVis">
-              <span v-if="!newItemVis"><i class="bi bi-caret-right" /></span>
-              <span v-else><i class="bi bi-caret-down" /></span>
-            </button>
-            <div id="addBpItem" class="form-group row collapse p-2 px-4">
-              <div class="input-group mt-2">
-                <button class="btn btn-outline-primary" type="button" @click="saveNewItem"><i class="bi bi-plus-circle"></i></button>
-                <input v-model="newItemName" type="text" list="itemNames" class="form-control min-1" id="newItemName" autocomplete="off" placeholder="Item Name" />
-                <span class="input-group-text">Menge: </span>
-                <input v-model.number="newItemQuantity" type="number" min="1" step="1" class="form-control min-1" id="newItemQ" />
-                <datalist id="itemNames">
-                  <option v-for="name in itemNames">{{ name }}</option>
-                </datalist>
+
+          <div class="">
+            <!--List for Blueprint Base Cost-->
+            <h4>Blueprint Items (bei 150%)</h4>
+            <div v-for="c in item.blueprint.baseCost">
+              <label :for="'itemBp-' + c.itemID">{{ c.itemName }}</label>
+              <div class="input-group">
+                <button class="btn btn-danger" @click="deleteCost(c.itemID)"><i class="bi bi-trash" /></button>
+                <input v-model.number="item.blueprint.baseCost[getResIndex(c.itemID)].quantity" min="1" type="number" class="form-control" :id="'itemBp-' + c.itemID" required pattern="[0-9]+" />
+              </div>
+            </div>
+            <!--Add Item Input-->
+            <div class="pt-4">
+              <button class="btn" :class="[newItemVis? 'btn-secondary' : 'btn-success']" data-bs-toggle="collapse" data-bs-target="#addBpItem" @click="toggleNewItemVis">
+                <span v-if="!newItemVis"><i class="bi bi-caret-right" /></span>
+                <span v-else><i class="bi bi-caret-down" /></span>
+              </button>
+              <div id="addBpItem" class="form-group row collapse p-2 px-4">
+                <div class="input-group mt-2">
+                  <!--Add Item Data-->
+                  <button class="btn btn-outline-primary" type="button" @click="saveNewItem"><i class="bi bi-plus-circle"></i></button>
+                  <input v-model="newItemName" type="text" list="itemNames" class="form-control min-1" id="newItemName" autocomplete="off" placeholder="Item Name" required pattern="[a-zA-Z0-9]+( *[a-zA-Z0-9]+)*" />
+                  <span class="input-group-text">Menge: </span>
+                  <input v-model.number="newItemQuantity" type="number" min="1" step="1" class="form-control min-1" id="newItemQ" required pattern="[0-9]+" />
+
+                  <datalist id="itemNames">
+                    <option v-for="name in itemNames">{{ name }}</option>
+                  </datalist>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
         <div class="alert alert-danger" v-if="errorMsg != null">
           <strong>Fehler!</strong> {{ errorMsg }}
         </div>
@@ -72,10 +90,24 @@
             Speichern
           </button>
         </div>
+
       </form>
     </div>
     <!--Toasts-->
-
+    <div class="position-fixed bottom-0 center p-3" style="z-index: 11">
+      <div id="saveToast" class="toast border border-success hide" data-bs-delay="5000">
+        <div class="toast-header">
+          Gespeichert!
+          <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">
+          Das Item wurde gespeichert.
+        </div>
+        <div class="progress" id="stBarP">
+          <div id="stBar" class="progress-bar bg-success"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -114,12 +146,14 @@
           "SHIP_SKINS",
           "OTHER_ITEMS"
         ],
+        hasBp: false,
         addItem: false,
         visible: false,
         newItemVis: false,
         newItemName: "",
         newItemQuantity: 1,
         errorMsg: null,
+        unsavedChanges: false,
       }
     },
     props: {
@@ -144,8 +178,10 @@
 
       },
       getResIndex(id) {
-        for (const i in this.item.baseCost) {
-          if (this.item.baseCost[i].itemID == id) return i;
+        for (const i in this.item.blueprint.baseCost) {
+          if (this.item.blueprint.baseCost[i].itemID == id) {
+            return i;
+          }
         }
         return 0;
       },
@@ -159,12 +195,29 @@
         this.newItemVis = !this.newItemVis
       },
       deleteCost(id) {
-        for (const i in this.item.baseCost) {
-          if (this.item.baseCost[i].itemID == id) {
-            this.item.baseCost.splice(i, 1);
+        for (const i in this.item.blueprint.baseCost) {
+          if (this.item.blueprint.baseCost[i].itemID == id) {
+            this.item.blueprint.baseCost.splice(i, 1);
             return;
           }
         }
+      },
+      changeBp() {
+        if (this.hasBp && this.item.blueprint == null) {
+          this.item.blueprint = {
+            resultQuantity: 1,
+            stationFees: 0,
+            baseCost: []
+          };
+          document.getElementById("hasBp").disabled = true;
+        } else {
+
+        }
+      },
+      deleteBp() {
+        this.item.blueprint = null;
+        this.hasBp = false;
+        document.getElementById("hasBp").disabled = false;
       },
       saveNewItem: async function () {
         if (this.newItemName == "") {
@@ -177,7 +230,7 @@
           console.error("Base Cost may not contain itself (item ID " + item.itemID);
           return;
         }
-        for (let i of this.item.baseCost) {
+        for (let i of this.item.blueprint.baseCost) {
           if (i.itemID == item.itemID) {
             this.errorMsg = "Dieses Item ist bereits vorhanden!";
             console.error("Item with ID " + i.itemID + " does already exist!");
@@ -185,7 +238,7 @@
           }
         }
         this.errorMsg = null;
-        this.item.baseCost.push({
+        this.item.blueprint.baseCost.push({
           itemID: item.itemID,
           itemName: item.name,
           quantity: this.newItemQuantity
@@ -193,9 +246,33 @@
       },
       async save() {
         const res = await this.$services.item.save(this.item);
+        if (res) {
+          this.unsavedChanges = false;
+          let toast = new bootstrap.Toast(document.getElementById("saveToast"));
+          document.getElementById("saveToast").addEventListener('shown.bs.toast', function (event) {
+            document.getElementById("stBar").classList.add("shrink");
+          })
+          toast.show();
+          new Promise(resolve => setTimeout(resolve, 100)).then(() => {
+            
+          });
+          
+        }
+      }
+    },
+    watch: {
+      item: {
+        deep: true,
+        handler(n, o) {
+          this.unsavedChanges = true;
+        }
       }
     },
     mounted() {
+      this.hasBp = this.item.blueprint != undefined && this.item.blueprint != null;
+      if (this.hasBp) {
+        document.getElementById("hasBp").disabled = true;
+      }
       //console.log("ItemEdit.vue mounted");
       //var timeString = new Date().toISOString();
     },
@@ -221,7 +298,34 @@
     display: none;
   }
 
+  .center {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
   .min-1 {
-      flex-basis: 200px !important;
+    flex-basis: 200px !important;
+  }
+  #stBarP {
+    height: 4px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  #stBar {
+    transition: width 5s;
+  }
+  .shrink {
+     animation-duration: 5s;
+     animation-iteration-count: 1;
+     animation-name: toastBar;
+  }
+
+  @keyframes toastBar {
+      from {
+          width: 100%
+      }
+      to {
+          width: 0%
+      }
   }
 </style>

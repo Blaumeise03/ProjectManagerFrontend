@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Items</h1>
-    <item-list :items="items" :ressources="ressources" />
+    <item-list :items="items" />
   </div>
 </template>
 
