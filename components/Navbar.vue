@@ -1,43 +1,34 @@
 <template>
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar" id="nav-toggle">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="collapsibleNavbar">
-        <!--ul class="navbar-nav">
-          <li class="nav-item">
-            <NuxtLink class="nav-link" :to="'/wallet/' + user.mid">Wallet</NuxtLink>
-          </li>
-          <li class="nav-item">
-            <NuxtLink class="nav-link" to="/wallet">Corp</NuxtLink>
-          </li>
-          <li class="nav-item">
-            <NuxtLink class="nav-link" to="/wallet/transaction">Neu</NuxtLink>
-          </li>
-        </ul-->
+      <NuxtLink class="navbar-brand me-0" to="/" id="nav-brand">
+        <img src="/V2_Logo2x.png" alt="V2 Logo" style="width:40px;" class="rounded-pill">
+      </NuxtLink>
 
-        <span class="navbar-text pathLink" id="home">
+      <div class="collapse navbar-collapse my-2" id="collapsibleNavbar">
+        <span class="navbar-text pathLink ms-2" id="home">
           <NuxtLink class="" :class="{ active: isHomePage, inactive: !isHomePage }" to="/">Home</NuxtLink><span v-if="!isHomePage" class="seperator">»</span>
         </span>
         <span class="navbar-text pathLink" v-for="location in loadLocation" :id="location.text">
           <NuxtLink class="" :class="{ active: location.last, inactive: !location.last }" :to="location.link">{{ location.text }}</NuxtLink><span v-if="!location.last" class="seperator">»</span>
         </span>
         <span class="ps-8 me-auto"></span>
-
-        <div class="d-flex">
-          <div v-if="!isLoggedOff" class="navbar-text me-2">{{ userInfo }}</div>
-          <div v-else class="navbar-text me-2">Bitte Anmelden</div>
-          <NuxtLink v-if="!isLoggedOff" to="/logout" class="" >
-            <button class="btn btn-primary" type="button">Logout</button>
-          </NuxtLink>
-          <NuxtLink v-else to="/login" class="" >
-            <button class="btn btn-primary" type="button">Login</button>
-          </NuxtLink>
-        </div>
       </div>
-
+      <div class="d-flex" id="nav-login">
+        <div v-if="!isLoggedOff" class="navbar-text me-2">{{ userInfo }}</div>
+        <div v-else class="navbar-text me-2">Bitte Anmelden</div>
+        <NuxtLink v-if="!isLoggedOff" to="/logout" class="">
+          <button class="btn btn-primary" type="button">Logout</button>
+        </NuxtLink>
+        <NuxtLink v-else to="/login" class="">
+          <button class="btn btn-primary" type="button">Login</button>
+        </NuxtLink>
+      </div>
     </div>
   </nav>
 </template>
@@ -124,6 +115,41 @@
     color: #808080
   }
 
+  #nav-toggle {
+    order: 0;
+  }
+
+  #nav-brand {
+    order: 1;
+  }
+
+  #collapsibleNavbar {
+    order: 2;
+  }
+
+  #nav-login {
+    order: 3;
+  }
+
+  @media (max-width: 576px) {
+    #nav-toggle {
+      order: 0;
+    }
+
+    #nav-brand {
+      order: 2;
+    }
+
+    #collapsibleNavbar {
+      order: 1;
+      flex-basis: content;
+    }
+
+    #nav-login {
+      order: 3;
+    }
+  }
+
   @media only screen and (min-width: 576px) {
     .navbar .navbar-nav .nav-item .nav-link {
       padding: 0 0.5em;
@@ -133,5 +159,4 @@
       border-right: 2px solid rgba(255, 255, 255, 0.55);
       margin-right: 8px;
     }
-  }
-</style>
+  }</style>
