@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <div class="container-fluid">
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar" id="nav-toggle">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav-login" id="nav-toggle">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -10,16 +10,16 @@
         <img src="/V2_Logo2x.png" alt="V2 Logo" style="width:40px;" class="rounded-pill">
       </NuxtLink>
 
-      <div class="collapse navbar-collapse my-2" id="collapsibleNavbar">
+      <div class="my-2" id="nav-link">
         <span class="navbar-text pathLink ms-2" id="home">
           <NuxtLink class="" :class="{ active: isHomePage, inactive: !isHomePage }" to="/">Home</NuxtLink><span v-if="!isHomePage" class="seperator">»</span>
-        </span>
-        <span class="navbar-text pathLink" v-for="location in loadLocation" :id="location.text">
+        </span><!--
+     --><span class="navbar-text pathLink" v-for="location in loadLocation" :id="location.text">
           <NuxtLink class="" :class="{ active: location.last, inactive: !location.last }" :to="location.link">{{ location.text }}</NuxtLink><span v-if="!location.last" class="seperator">»</span>
         </span>
         <span class="ps-8 me-auto"></span>
       </div>
-      <div class="d-flex" id="nav-login">
+      <div class="flex collapse navbar-collapse" id="nav-login">
         <div v-if="!isLoggedOff" class="navbar-text me-2">{{ userInfo }}</div>
         <div v-else class="navbar-text me-2">Bitte Anmelden</div>
         <NuxtLink v-if="!isLoggedOff" to="/logout" class="">
@@ -115,6 +115,10 @@
     color: #808080
   }
 
+  .flex {
+    display: flex;
+  }
+
   #nav-toggle {
     order: 0;
   }
@@ -123,12 +127,14 @@
     order: 1;
   }
 
-  #collapsibleNavbar {
+  #nav-link {
+    margin-right: auto;
     order: 2;
   }
 
   #nav-login {
     order: 3;
+    flex-grow: 0;
   }
 
   @media (max-width: 576px) {
@@ -140,13 +146,16 @@
       order: 2;
     }
 
-    #collapsibleNavbar {
+    #nav-link {
       order: 1;
       flex-basis: content;
     }
 
     #nav-login {
       order: 3;
+      margin-left: auto;
+      padding-top: 1rem;
+      flex-basis: content;
     }
   }
 
