@@ -57,6 +57,7 @@ export default {
     '@nuxtjs/proxy',
     '@nuxtjs/axios',
     '@nuxtjs/dotenv',
+    '@nuxt/devalue',
   ],
 
   module: {
@@ -83,7 +84,7 @@ export default {
     prefix: '/api/'
   },
   proxy: {
-    '/api/': 'http://192.168.0.39:8081/'
+    '/api/': 'http://localhost:8081/'
   },
   server: {
     host: '0.0.0.0' // default: localhost
