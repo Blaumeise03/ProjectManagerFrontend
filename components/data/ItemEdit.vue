@@ -1,7 +1,7 @@
 <template>
   <div class="container-md box p-2">
     <button data-bs-toggle="collapse" data-bs-target="#editItemForm" class="btn btn-primary" @click="toggleVis">
-      <span>Item</span>
+      <span>Bearbeiten...</span>
     </button>
 
     <div id="editItemForm" class="collapse ">
@@ -30,13 +30,13 @@
           </div>
         </div>
         <!--Start of Blueprint-->
-        <div class="form-check form-switch">
+        <div class="form-check form-switch mt-1">
           <input class="form-check-input" v-model.boolean="hasBp" type="checkbox" id="hasBp" name="blueprint" @change="changeBp">
           <label class="form-check-label" for="hasBp">Blueprint</label>
         </div>
-        <div id="blueprintInput" v-if="item.blueprint">
+        <div id="blueprintInput" class="mt-2 pt-2 border-top border-secondary" v-if="item.blueprint">
           <div class="form-group row">
-            <h3><button type="button" class="btn btn-danger me-2" @click="deleteBp"><i class="bi bi-trash"></i></button>Blueprint</h3>
+            <h3>Blueprint<button type="button" class="btn btn-danger ms-2" @click="deleteBp"><i class="bi bi-trash"></i></button></h3>
             <div class="col-sm-6">
               <label for="itemResQ">Menge pro BP:</label>
               <input v-model.number="item.blueprint.resultQuantity" min="1" type="number" class="form-control t-input" id="itemResQ" required pattern="[0-9]+" />
@@ -49,9 +49,9 @@
             </div>
           </div>
 
-          <div class="">
+          <div class="mt-2">
             <!--List for Blueprint Base Cost-->
-            <h4>Blueprint Items (bei 150%)</h4>
+            <h4>Item Kosten (bei 150%)</h4>
             <div v-for="c in item.blueprint.baseCost">
               <label :for="'itemBp-' + c.itemID">{{ c.itemName }}</label>
               <div class="input-group">
@@ -60,24 +60,16 @@
               </div>
             </div>
             <!--Add Item Input-->
-            <div class="pt-4">
-              <button class="btn" :class="[newItemVis? 'btn-secondary' : 'btn-success']" data-bs-toggle="collapse" data-bs-target="#addBpItem" @click="toggleNewItemVis">
-                <span v-if="!newItemVis"><i class="bi bi-caret-right" /></span>
-                <span v-else><i class="bi bi-caret-down" /></span>
-              </button>
-              <div id="addBpItem" class="form-group row collapse p-2 px-4">
-                <div class="input-group mt-2">
-                  <!--Add Item Data-->
-                  <button class="btn btn-outline-primary" type="button" @click="saveNewItem"><i class="bi bi-plus-circle"></i></button>
-                  <input v-model="newItemName" type="text" list="itemNames" class="form-control min-1" id="newItemName" autocomplete="off" placeholder="Item Name" required pattern="[a-zA-Z0-9]+( *[a-zA-Z0-9]+)*" />
-                  <span class="input-group-text">Menge: </span>
-                  <input v-model.number="newItemQuantity" type="number" min="1" step="1" class="form-control min-1" id="newItemQ" required pattern="[0-9]+" />
+            <div class="input-group mt-2">
+              <!--Add Item Data-->
+              <button class="btn btn-outline-primary" type="button" @click="saveNewItem"><i class="bi bi-plus-circle"></i></button>
+              <input v-model="newItemName" type="text" list="itemNames" class="form-control min-1" id="newItemName" autocomplete="off" placeholder="Item Name" pattern="[a-zA-Z0-9]*( *[a-zA-Z0-9]+)*" />
+              <span class="input-group-text">Menge: </span>
+              <input v-model.number="newItemQuantity" type="number" min="1" step="1" class="form-control min-1" id="newItemQ" required pattern="[0-9]+" />
 
-                  <datalist id="itemNames">
-                    <option v-for="name in itemNames">{{ name }}</option>
-                  </datalist>
-                </div>
-              </div>
+              <datalist id="itemNames">
+                <option v-for="name in itemNames">{{ name }}</option>
+              </datalist>
             </div>
           </div>
         </div>
@@ -85,12 +77,16 @@
           <strong>Fehler!</strong> {{ errorMsg }}
         </div>
 
-        <div class="form-group pt-2">
-          <button class="btn btn-primary" @click="save">
-            Speichern
-          </button>
+        <div class="d-flex align-items-center pt-2">
+          <div class="form-group">
+            <button class="btn btn-primary" @click="save">
+              Speichern
+            </button>
+          </div>
+            <div class="alert alert-warning ms-2" v-if="unsavedChanges">
+              <strong>Achtung!</strong> Ungespeicherte Änderungen!
+            </div>
         </div>
-
       </form>
     </div>
     <!--Toasts-->
