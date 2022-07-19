@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import WalletList from '~/components/WalletList.vue'
+  import WalletList from '~/components/wallet/WalletList.vue'
   //import TransactionItemCreate from '~/components/TransactionItemCreate.vue'
 
   export default {

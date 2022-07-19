@@ -15,8 +15,8 @@
 </template>
 
 <script>
-  import TransactionList from '~/components/TransactionList.vue'
-  import TransactionItemCreate from '~/components/TransactionItemCreate.vue'
+  import TransactionList from '~/components/wallet/transactions/TransactionList.vue'
+  import TransactionItemCreate from '~/components/wallet/transactions/TransactionItemCreate.vue'
 
   export default {
     components: {

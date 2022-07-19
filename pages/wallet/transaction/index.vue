@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import TransactionItemCreate from '~/components/TransactionItemCreate.vue'
+  import TransactionItemCreate from '~/components/wallet/transactions/TransactionItemCreate.vue'
 
   export default {
     components: {

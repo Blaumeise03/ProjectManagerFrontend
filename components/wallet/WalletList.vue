@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import WalletItem from '~/components/WalletItem.vue'
+  import WalletItem from '~/components/wallet/WalletItem.vue'
 
   export default {
     components: {

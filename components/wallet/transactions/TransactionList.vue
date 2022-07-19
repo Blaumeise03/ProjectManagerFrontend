@@ -19,7 +19,7 @@
 </template>
 
 <script>
-  import TransactionItem from '~/components/TransactionItem.vue'
+  import TransactionItem from '~/components/wallet/transactions/TransactionItem.vue'
 
   export default {
     components: {
