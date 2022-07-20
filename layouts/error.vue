@@ -3,7 +3,7 @@
     <h1>Ein Fehler ist aufgetreten. Statuscode: {{ error.statusCode }}</h1>
     <!--Alert at the top-->
     <div class="alert alert-danger">
-      <strong>Fehler!</strong>
+      <strong>Fehler:</strong>
       <span v-if="error.statusCode === 404">Die angegebene Seite konnte nicht geladen werden!</span>
       <span v-else-if="error.statusCode === 401">
         Unautorisierter Zugang, bitte die Anmeldung prüfen!<br />
@@ -12,6 +12,10 @@
       <span v-else-if="error.statusCode === 403">
         Unzureichende Berechtigungen!<br />
         <i>Dieser Fehler bedeutet, dass Sie keinen Zugriff auf die gewünschte Ressource haben</i>
+      </span>
+      <span v-else-if="error.statusCode === 504">
+        Gateway Timeout!<br />
+        <i>Vermutlich ist der Datenbank-Server nicht erreichbar. Wenn das Problem bestehen bleibt, informieren Sie bitte einen Administrator.</i>
       </span>
       <span v-else>Unbekannter Fehler.</span>
     </div>
@@ -24,14 +28,14 @@
       <button class="btn btn-primary mt-4" @click="copyMsg">Kopieren</button>
     </div>
     <p class="mb-4">Sie können diese Fehlermeldung kopieren und an einen Administrator senden wenn Sie der Ansicht sind, es handle sich um einen vom Server verschuldeten Fehler.</p>
+    <!--Return back to homepage-->
+    <NuxtLink to="/" class="btn btn-warning mt-1 mb-4">Zurück zur Home Page</NuxtLink>
     <!--FAQ-->
     <h2>Weitere Hilfe</h2>
     <p>Sie können den Status Code in der MDN Dokumentation nachlesen:</p>
     <p><a :href="getLink">{{ getLink }}</a></p>
     <p>Zusätzlich gibt es hier für alle häufigen Fehler eine Erklärung:</p>
     <error-faq :code="error.statusCode" />
-    <!--Return back to homepage-->
-    <NuxtLink to="/" class="btn btn-warning mt-5">Zurück zur Home Page</NuxtLink>
   </div>
 </template>
 

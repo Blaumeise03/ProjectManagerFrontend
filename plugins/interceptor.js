@@ -6,7 +6,8 @@ export default (ctx, inject) => {
 
   //Axios error interceptor
   ctx.$axios.onError((error) => {
-    const errorMsg = error.response ? error.response.data.message : "Unknown error"
+    const hasResponse = error.response != undefined && error.response != null;
+    const errorMsg = error.response ? error.response.data.message : error.message
     const errorCode = error.response ? parseInt(error.response.status) : -1
     if (errorCode == 401 && ctx.route.name != "login") {
       //401 Unauthorized -> Redirecting to login page whilst adding redirect query param and preserving existing query params
@@ -25,10 +26,10 @@ export default (ctx, inject) => {
         //Server side error
         console.warn(error)
         //Passing error to nuxt, will be handled by the error.vue layout
-        if (errorMsg == undefined) {
+        if (!hasResponse) {
           ctx.error({
             statusCode: errorCode,
-            message: "Unknown Error"
+            message: error
           });
         } else {
           //Building error message
