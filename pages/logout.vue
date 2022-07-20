@@ -3,7 +3,7 @@
     <h1 class="title">
       Logout
     </h1>
-    <form @submit.prevent="performLogout" action="post" class="logout-form">
+    <form @submit.prevent="performLogout" class="logout-form">
       <button type="submit" class="logout-button">
         Logout
       </button>
@@ -22,6 +22,7 @@
     methods: {
       async performLogout() {
         let successDiv = document.getElementById("success");
+        //Perform logout
         if (await this.$services.login.performLogout()) {
           this.$store.commit('user/setDefault');
           successDiv.textContent = "Logout successfull";

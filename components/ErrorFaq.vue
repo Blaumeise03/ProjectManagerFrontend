@@ -1,6 +1,6 @@
 <template>
   <div id="errorFaqAccordion">
-
+    <!--400 Bad Request-->
     <div class="card">
       <div class="card-header">
         <a class="btn" data-bs-toggle="collapse" href="#code400">
@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-
+    <!--401 Unauthorized-->
     <div class="card">
       <div class="card-header">
         <a class="btn" data-bs-toggle="collapse" href="#code401">
@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-
+    <!--403 Forbidden-->
     <div class="card">
       <div class="card-header">
         <a class="btn" data-bs-toggle="collapse" href="#code403">
@@ -44,7 +44,7 @@
         </div>
       </div>
     </div>
-
+    <!--404 Not Found-->
     <div class="card">
       <div class="card-header">
         <a class="btn" data-bs-toggle="collapse" href="#code404">
@@ -58,7 +58,7 @@
         </div>
       </div>
     </div>
-
+    <!--500 Internal Server Error-->
     <div class="card">
       <div class="card-header">
         <a class="btn" data-bs-toggle="collapse" href="#code500">
@@ -73,7 +73,7 @@
         </div>
       </div>
     </div>
-
+    <!--504 Gateway Timeout-->
     <div class="card">
       <div class="card-header">
         <a class="btn" data-bs-toggle="collapse" href="#code504">
@@ -87,7 +87,7 @@
         </div>
       </div>
     </div>
-
+    <!--Other Error Codes-->
     <div class="card">
       <div class="card-header">
         <a class="btn" data-bs-toggle="collapse" href="#other">
@@ -98,7 +98,6 @@
         <div class="card-body">
           Für alle weiteren Fehlercodes besuchen Sie bitte die folgende Seite:<br />
           <a href="https://developer.mozilla.org/de/docs/Web/HTTP/Status">https://developer.mozilla.org/de/docs/Web/HTTP/Status</a><br />
-
         </div>
       </div>
     </div>
@@ -108,10 +107,11 @@
 <script>
   export default {
     props: {
+      //The error code, the corresponding accordion card will be expanded by default
       code: {
         type: Number,
         default() {
-          return -1
+          return -1;
         }
       }
     }

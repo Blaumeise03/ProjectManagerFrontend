@@ -4,22 +4,24 @@
       Konto {{ playerID }}
     </h1>
     <div class="container-md pb-4">
-      <transaction-item-create :playerID="playerID" :players="players" :playerName="playerName"/>
+      <transaction-item-create :playerID="playerID" :players="players" :playerName="playerName" />
     </div>
+    <!--Playername + Balance-->
     <div class="container-md pb-2">
       <div class="balance box">Kontostand von {{ playerName }}: <span v-bind:class="{ negative: isNegativeBal, positive: !isNegativeBal }">{{ getPriceString }}</span> ISK</div>
     </div>
+    <!--Unverified transactions of the user-->
     <div class="container-md box">Austehende Transaktionen</div>
-    <transaction-list :transactions="transactionsUnverified" />
+    <transaction-list :transactions="transactionsUnverified" :owner="playerID" />
+    <!--Verified transactions of the user-->
     <div class="container-md box">Abgeschlossene Transaktionen</div>
-    <transaction-list :transactions="transactionsVerified" />
+    <transaction-list :transactions="transactionsVerified" :owner="playerID" />
   </div>
 </template>
 
 <script>
   import TransactionList from '~/components/wallet/transactions/TransactionList.vue'
   import TransactionItemCreate from '~/components/wallet/transactions/TransactionItemCreate.vue'
-  import devalue from '@nuxt/devalue';
 
   export default {
     components: {
@@ -43,6 +45,7 @@
         negativeBal: {
           type: Boolean
         },
+        //All players, will be passed to the TransactionItemCreate component
         players: {
           type: Array,
           default() {
@@ -59,7 +62,6 @@
     },
     computed: {
       isNegativeBal: function () {
-        //console.log(this.$route.params.id + " " + this.transaction.fromID)
         if (this.balance == undefined) return null;
         return this.balance < 0
       },
@@ -68,26 +70,17 @@
         return this.balance.toLocaleString('en-US')
       }
     },
-    mounted() {
-      //console.log(this)
-      //if (this.$router.params.id == undefined) {
-        //console.log(ctx.app.router)
-        //console.warn("No wallet id found, redirecting to /wallets")
-        //this.$router.push("/wallets")
-        //return;
-      //}
-      //console.log("teeest")
-      //console.log(this)
-      
-    },
+    /**
+     * Nuxt lifecycle hook to load data.
+     * 
+     * @param ctx the nuxt context
+     */
     async asyncData(ctx) {
-      //console.log("t: wallet_id");
       try {
         const transactions = await ctx.app.$services.transaction.findAllByUserId(ctx.route.params.id);
-        //console.log(ctx.app.$services.transaction.getVerified(transactions));
         const player = await ctx.app.$services.player.findById(ctx.route.params.id);
+        //Error placeholder
         if (ctx.route.params.id == undefined) {
-          //console.log("tee");
           return {
             transactionsVerified: [],
             transactionsUnverified: [],
@@ -105,7 +98,7 @@
           playerName: player.name
         }
       } catch (error) {
-        
+        //Axios errors will be handled by the interceptor.
       }
     }
   }

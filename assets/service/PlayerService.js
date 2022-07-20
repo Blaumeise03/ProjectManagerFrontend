@@ -6,8 +6,13 @@ export default class PlayerAPI {
     this.axios = $axios
   }
 
+  /**
+   * Fetches a player from the API.
+   * 
+   * @param {number} id The ID of the player.
+   * @returns {Player} THe player with the given ID.
+   */
   findById(id) {
-    //console.log(id)
     if (id == null || id == -1) return null;
 
     return this.axios({
@@ -16,11 +21,16 @@ export default class PlayerAPI {
       withCredentials: true
     }).then((response) => {
       const t = response.data;
-      //console.log(response.data)
       return new Player(t.id, t.name, t.ingameID, t.corp, t.parent, t.user);
     })
   }
 
+  /**
+   * Fetches all players of a corp with a given corptag.
+   * 
+   * @param {string} tag The corptag.
+   * @returns {Player[]} The players of the given corp.
+   */
   findAllCorpTag(tag) {
     return this.axios({
       method: 'get',
@@ -35,6 +45,12 @@ export default class PlayerAPI {
     })
   }
 
+  /**
+   * Fetches all players of a corp with a given ID.
+   * 
+   * @param {number} id The ID of the corp.
+   * @returns {Player[]} The players of the given corp.
+   */
   findAllByCorpID(id) {
     if (id == null || id == -1) return []
 
@@ -47,13 +63,17 @@ export default class PlayerAPI {
       response.data.forEach((t) => {
         players.push(new Player(t.id, t.name, t.ingameID, t.corp, t.parent, t.user))
       })
-      //console.log(players)
       return players
     })
   }
 
+  /**
+   * Fetches all wallets of a given corp ID.
+   * 
+   * @param {number} id The corp ID.
+   * @returns {Wallet[]} The wallets of the corp.
+   */
   findWalletsByCorp(id) {
-    //console.log("w")
     if (id == null || id == -1) return [];
     return this.axios({
       method: 'get',
@@ -64,7 +84,6 @@ export default class PlayerAPI {
       response.data.forEach((t) => {
         wallets.push(new Wallet(t.id, t.name, t.verified, t.unverified))
       })
-      //console.log(players)
       return wallets;
     })
   }

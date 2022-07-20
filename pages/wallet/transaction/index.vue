@@ -6,7 +6,8 @@
     <div class="container-md box">
       Transaktion eingeben
     </div>
-    <transaction-item-create class="container-md" :transaction="transaction" />
+    <!--Transaction create form-->
+    <transaction-item-create class="container-md" :transaction="transaction" :visible="true" />
   </div>
 </template>
 

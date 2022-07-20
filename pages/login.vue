@@ -3,6 +3,7 @@
     <h1 class="title">
       Login
     </h1>
+    <!--Login form-->
     <form @submit.prevent="performLogin" action="post" class="login-form">
       <p>
         <input id="username"
@@ -37,20 +38,37 @@
       }
     },
     methods: {
+      /**
+       * Method for login in.
+       *
+       * Sends an api request to the api with the user credentials from the page. If successfull,
+       * the client will be redirected to the URL query param 'redirect'. If it doesn't exist, the
+       * client will be redirected to the home page. In both cases all query params except for the
+       * redirect path will be preserved.
+       */
       async performLogin() {
+        //Send login and wait for response
         if (await this.$services.login.performLogin(this.username, this.password)) {
+          //Login successfull
+          //Retrieving session details and storing them
           var u = await this.$services.login.getSessionDetails();
           if (u != null) {
             this.$store.commit('user/set', u);
           }
-          //console.log(this.$store.state)
+          //Redirecting client
           if (this.$route.query.redirect != null) {
-            this.$router.push(this.$route.query.redirect);
-            return;
+            //Query param found, redirecting to this page
+            let q = this.$route.query;
+            let target = q.redirect;
+            //Deleting redirect query param
+            delete q.redirect;
+            this.$router.push({ path: target, query: q });
+          } else {
+            //Redirecting to the homepage
+            this.$router.push({ path: '/', query: this.$route.query })
           }
-          //console.log(this.$route)
-          this.$router.push('/')
         } else {
+          //Login failed, reseting input fields
           this.username = ''
           this.password = ''
         }

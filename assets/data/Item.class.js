@@ -17,10 +17,6 @@ export default class Item {
      * ]
      */
     this.blueprint = null;
-;
-    //this.baseCost = [];
-    //this.resultQuantity = null;
-    //this.stationFees = null;
   }
 
   getPrice(type) {

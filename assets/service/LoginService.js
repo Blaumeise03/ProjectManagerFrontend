@@ -3,6 +3,14 @@ export default class LoginService {
     this.axios = $axios
   }
 
+  /**
+   * Performs a login into the API.
+   * 
+   * @param {string} username The username for the login.
+   * @param {string} password The password for the login.
+   *
+   * @returns {boolean} Whether the login was successful.
+   */
   performLogin(username, password) {
     const data = new FormData()
     data.append('username', username)
@@ -18,6 +26,11 @@ export default class LoginService {
     })
   }
 
+  /**
+   * Performs a logout from the API.
+   *
+   * @returns {boolean} Whether the logout was successful.
+   */
   performLogout() {
     return this.axios({
       method: 'post',
@@ -30,6 +43,11 @@ export default class LoginService {
     })
   }
 
+  /**
+   * Fetches the details of the currently logged-in user from the API.
+   *
+   * @returns {object} The user data or null.
+   */
   getSessionDetails() {
     return this.axios({
       method: 'get',

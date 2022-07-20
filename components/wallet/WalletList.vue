@@ -1,11 +1,13 @@
 <template>
   <div class="wallet-container">
     <div class="wallet-list-container container-md pt-2 box">
+      <!--The headings for the table-->
       <div class="row desktop-only wallet-item">
         <div class="col">Name</div>
         <div class="col">Konto</div>
         <div class="col">Austehend</div>
       </div>
+      <!--The specific wallet rows-->
       <wallet-item v-for="wallet in wallets" :key="wallet.id" :wallet="wallet" />
     </div>
   </div>
@@ -19,6 +21,7 @@
       WalletItem
     },
     props: {
+      //The list of all wallets which should be displayed in this component
       wallets: {
         type: Array,
         default() {
@@ -27,9 +30,19 @@
       }
     },
     methods: {
+      /**
+       * Adds an wallet to this list.
+       * 
+       * @param item the wallet which should be added.
+       */
       createItem(item) {
         this.wallets.push(item)
       },
+      /**
+       * Removes an wallet from this list.
+       * 
+       * @param item the wallet which should be removed.
+       */
       deleteItem(item) {
         this.wallets.splice(this.wallets.indexOf(item), 1)
       }

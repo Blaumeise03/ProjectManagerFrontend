@@ -1,39 +1,44 @@
-import Vue from 'vue'
+import Vue from "vue"
 
 export default (ctx, inject) => {
-  inject('eventHub', new Vue())
+  //Event bus
+  inject("eventHub", new Vue())
 
+  //Axios error interceptor
   ctx.$axios.onError((error) => {
-    //console.log(error.response)
-    const errorMsg = error.response ? error.response.data.message : 'Unknown error'
+    const errorMsg = error.response ? error.response.data.message : "Unknown error"
     const errorCode = error.response ? parseInt(error.response.status) : -1
     if (errorCode == 401 && ctx.route.name != "login") {
-      //console.log(errorCode + ' - ' + errorMsg + ' on: ' + ctx.route.path)
-      ctx.redirect('/login?redirect=' + ctx.route.path);
+      //401 Unauthorized -> Redirecting to login page whilst adding redirect query param and preserving existing query params
+      ctx.route.query.redirect = ctx.route.path;
+      ctx.redirect("/login",  ctx.route.query);
     } else if (errorCode == 401 && ctx.route.name == "login") {
-      //Ingnore error
+      //Ignore error because it's the login page
     } else {
+      //Another error
       if (process.client) {
-        ctx.app.$eventHub.$emit('axios-error', error);
-      } else {
-        console.log("erroooor2 " + errorCode + " on " + ctx.route.name)
-        console.log(ctx.route.name != "login")
-        //ctx.redirect('/axiosError', );
+        //Client side error
         console.warn(error)
+        //Passing error into eventhub, it will be received by the default.vue layout and passed into the error modal
+        ctx.app.$eventHub.$emit("axios-error", error);
+      } else {
+        //Server side error
+        console.warn(error)
+        //Passing error to nuxt, will be handled by the error.vue layout
         if (errorMsg == undefined) {
           ctx.error({
-            statusCode: errorCode
+            statusCode: errorCode,
+            message: "Unknown Error"
           });
         } else {
-          var info = (error.response && error.response.data && error.response.data.message) ? ':\n' + error.response.data.message + '\n' : ''
+          //Building error message
+          var info = (error.response && error.response.data && error.response.data.message) ? ":\n" + error.response.data.message + "\n" : ""
           ctx.error({
             statusCode: errorCode,
-            message: error.message + info + '\nResponse received from server:\n' + JSON.stringify(error.response.data, undefined, 2)
+            message: error.message + info + "\nResponse received from server:\n" + JSON.stringify(error.response.data, undefined, 2)
           });
         }
       }
-      //console.log("send")
-      //throw new Error(error);
     }
   })
 }

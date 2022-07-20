@@ -36,6 +36,9 @@
 .mobile-border {
 }
 
+.mobile-border-r {
+}
+
 .mobile-bold {
 }
 
@@ -92,11 +95,24 @@
     border-width: thin;
   }
 
+  .mobile-border-r {
+    border-right-color: rgb(187, 187, 187);
+    border-right-style: solid;
+    border-width: thin;
+  }
+
   .mobile-bold {
     font-weight: bold;
   }
 
-  .table-item {
-    border-width: medium;
+  .table-container .table-item {
+    border-width: 2px;
+    border-color: black;
+  }
+}
+
+@media screen and (max-width : 576px) {
+  .mobile-border-r {
+    border-right-style: none;
   }
 }

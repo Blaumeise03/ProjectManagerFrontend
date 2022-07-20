@@ -1,6 +1,7 @@
 <template>
   <div class="container p-5 mt-5 box">
     <h1>Ein Fehler ist aufgetreten. Statuscode: {{ error.statusCode }}</h1>
+    <!--Alert at the top-->
     <div class="alert alert-danger">
       <strong>Fehler!</strong>
       <span v-if="error.statusCode === 404">Die angegebene Seite konnte nicht geladen werden!</span>
@@ -15,18 +16,21 @@
       <span v-else>Unbekannter Fehler.</span>
     </div>
 
-
+    <!--The error message itself-->
     <h2>Fehlermeldung:</h2>
+    <!--Error message with a button to copy the debug message into the clipboard-->
     <div class="container box code p-2 mb-1">
       <pre class="m-0" id="debugMessage">{{ error.message }}</pre>
       <button class="btn btn-primary mt-4" @click="copyMsg">Kopieren</button>
     </div>
     <p class="mb-4">Sie können diese Fehlermeldung kopieren und an einen Administrator senden wenn Sie der Ansicht sind, es handle sich um einen vom Server verschuldeten Fehler.</p>
+    <!--FAQ-->
     <h2>Weitere Hilfe</h2>
     <p>Sie können den Status Code in der MDN Dokumentation nachlesen:</p>
     <p><a :href="getLink">{{ getLink }}</a></p>
     <p>Zusätzlich gibt es hier für alle häufigen Fehler eine Erklärung:</p>
     <error-faq :code="error.statusCode" />
+    <!--Return back to homepage-->
     <NuxtLink to="/" class="btn btn-warning mt-5">Zurück zur Home Page</NuxtLink>
   </div>
 </template>
@@ -76,17 +80,11 @@
         return obj !== undefined && obj !== null;
       },
       copyMsg() {
-        /* Get the text field */
+        // Get the text field
         var copyText = document.getElementById("debugMessage");
 
-        /* Select the text field */
-        //copyText.select();
-        //copyText.setSelectionRange(0, 99999); /* For mobile devices */
-
-        /* Copy the text inside the text field */
+        // Copy the text inside the text field
         navigator.clipboard.writeText(copyText.textContent);
-
-        /* Alert the copied text */
         alert("Nachricht wurde kopiert!");
       }
     },

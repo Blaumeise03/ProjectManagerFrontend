@@ -7,7 +7,6 @@ export default class ItemApi {
   }
 
   findById(id) {
-    //console.log(id)
     if (id == null || id == -1) return null;
 
     return this.axios({
