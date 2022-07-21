@@ -1,4 +1,8 @@
-# frontend
+# Project Manager Frontend
+This project is WIP and not ready for production!
+
+## Backend
+This webapp requires an API to work, check out the [backend](https://github.com/Blaumeise03/ProjectManagerBackend).
 
 ## Build Setup
 
