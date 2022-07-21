@@ -11,10 +11,11 @@ export default class LoginService {
    *
    * @returns {boolean} Whether the login was successful.
    */
-  performLogin(username, password) {
-    const data = new FormData()
-    data.append('username', username)
-    data.append('password', password)
+  performLogin(username, password, rememberMe) {
+    const data = new FormData();
+    data.append('username', username);
+    data.append('password', password);
+    data.append('remember-me', rememberMe);
     return this.axios({
       method: 'post',
       url: 'login',

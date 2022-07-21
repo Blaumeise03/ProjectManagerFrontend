@@ -22,6 +22,9 @@
                placeholder="Password"
                required>
       </p>
+      <p>
+        <input v-model="remember" type="checkbox" class="rememberMe" name="remember" /> Remember Me
+      </p>
       <button type="submit">
         Sign in
       </button>
@@ -34,7 +37,8 @@
     data() {
       return {
         username: '',
-        password: ''
+        password: '',
+        remember: false
       }
     },
     methods: {
@@ -48,7 +52,7 @@
        */
       async performLogin() {
         //Send login and wait for response
-        if (await this.$services.login.performLogin(this.username, this.password)) {
+        if (await this.$services.login.performLogin(this.username, this.password, this.remember)) {
           //Login successfull
           //Retrieving session details and storing them
           var u = await this.$services.login.getSessionDetails();
@@ -95,6 +99,11 @@
       margin-top: 20px;
       margin-bottom: 20px;
       outline: none;
+    }
+
+    .rememberMe {
+      width: auto;
+      height: auto;
     }
 
     button {

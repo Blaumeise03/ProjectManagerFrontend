@@ -11,6 +11,7 @@ export default (ctx, inject) => {
     const errorCode = error.response ? parseInt(error.response.status) : -1
     if (errorCode == 401 && ctx.route.name != "login") {
       //401 Unauthorized -> Redirecting to login page whilst adding redirect query param and preserving existing query params
+      console.log(error);
       ctx.route.query.redirect = ctx.route.path;
       ctx.redirect("/login",  ctx.route.query);
     } else if (errorCode == 401 && ctx.route.name == "login") {
