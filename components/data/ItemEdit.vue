@@ -73,34 +73,60 @@
             </div>
           </div>
         </div>
+        <!--Price data-->
+        <div>
+          <h3>Preise</h3>
+          <div v-for="p in item.prices">
+            <label :for="'itemPrice-' + p.item + '-' + p.type">{{ p.type }}</label>
+            <div class="input-group">
+              <button class="btn btn-danger" @click="deletePrice(p)"><i class="bi bi-trash" /></button>
+              <input v-model.number="p.value" min="1" type="number" class="form-control" :id="'itemPrice-' + p.item + '-' + p.type" required pattern="[0-9]+(.[0-9]+)?" />
+            </div>
+          </div>
+          <div class="input-group mt-2">
+            <!--Add Price Data-->
+            <button class="btn btn-outline-primary" type="button" @click="saveNewPrice"><i class="bi bi-plus-circle"></i></button>
+            <input v-model="newPrice.type" type="text" list="priceTypes" class="form-control min-1" id="newPriceType" autocomplete="off" placeholder="Price Typ" pattern="[a-zA-Z]+([_\-]+[a-zA-Z]+)*" />
+            <span class="input-group-text">Wert: </span>
+            <input v-model.number="newPrice.value" type="number" min="1" step="1" class="form-control min-1" id="newPriceValue" required pattern="[0-9]+(.[0-9]+)?" />
+
+            <datalist id="priceTypes">
+              <option v-for="type in priceTypes">{{ type }}</option>
+            </datalist>
+          </div>
+        </div>
+        <!--Error alert-->
         <div class="alert alert-danger" v-if="errorMsg != null">
           <strong>Fehler!</strong> {{ errorMsg }}
         </div>
-
+        <!--Save + delete button-->
         <div class="d-flex align-items-center pt-2">
           <div class="form-group">
             <button class="btn btn-primary" @click="save">
               Speichern
             </button>
+            <button type="button" class="btn btn-danger" id="delete" @click="deleteItem()">
+              <i class="bi bi-trash" />
+            </button>
           </div>
-            <div class="alert alert-warning ms-2" v-if="unsavedChanges">
-              <strong>Achtung!</strong> Ungespeicherte Änderungen!
-            </div>
+          <div class="alert alert-warning ms-2" v-if="unsavedChanges">
+            <strong>Achtung!</strong> Ungespeicherte Änderungen!
+          </div>
         </div>
       </form>
     </div>
     <!--Toasts-->
     <div class="position-fixed bottom-0 center p-3" style="z-index: 11">
-      <div id="saveToast" class="toast border border-success hide" data-bs-delay="5000">
-        <div class="toast-header">
-          Gespeichert!
+      <div id="saveToast" class="toast border hide" :class="'border-' + saveToast.color" data-bs-delay="5000">
+        <div class="toast-header" id="saveToastHeader">
+          {{ saveToast.header }}
           <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
         </div>
-        <div class="toast-body">
-          Das Item wurde gespeichert.
+        <div class="toast-body" id="saveToastBody">
+          {{ saveToast.body }}
         </div>
         <div class="progress" id="stBarP">
-          <div id="stBar" class="progress-bar bg-success"></div>
+          <div id="stBar" class="progress-bar" :class="'bg-' + saveToast.color"></div>
         </div>
       </div>
     </div>
@@ -142,6 +168,13 @@
           "SHIP_SKINS",
           "OTHER_ITEMS"
         ],
+        priceTypes: [
+          "MARKET_LOWEST_SELL",
+          "MARKET_SELL",
+          "MARKET_BUY",
+          "VCB_SELL",
+          "VCB_BUY"
+        ],
         hasBp: false,
         addItem: false,
         visible: false,
@@ -150,13 +183,22 @@
         newItemQuantity: 1,
         errorMsg: null,
         unsavedChanges: false,
+        saveToast: {
+          color: "success",
+          header: "Gespeichert!",
+          body: "Das Item wurde gespeichert."
+        },
+        newPrice: {
+          type: "",
+          value: 0
+        }
       }
     },
     props: {
       item: {
         type: Object,
         default() {
-          return {};
+          return new Item(null, "Name", "OTHER_ITEMS");
         }
       },
       itemNames: {
@@ -215,6 +257,21 @@
         this.hasBp = false;
         document.getElementById("hasBp").disabled = false;
       },
+      saveNewPrice() {
+        this.item.prices.push({
+          item: this.item.itemID,
+          type: this.newPrice.type,
+          value: this.newPrice.value
+        });
+      },
+      deletePrice(price) {
+        for (const i in this.item.prices) {
+          if (this.item.prices[i] == price) {
+            this.item.prices.splice(i, 1);
+            return;
+          }
+        }
+      },
       saveNewItem: async function () {
         if (this.newItemName == "") {
           this.errorMsg = "Das Item darf nicht leer sein!";
@@ -244,7 +301,7 @@
         const res = await this.$services.item.save(this.item);
         if (res) {
           this.unsavedChanges = false;
-          let toast = new bootstrap.Toast(document.getElementById("saveToast"));
+          let toast = bootstrap.Toast.getOrCreateInstance(document.getElementById("saveToast"));
           document.getElementById("saveToast").addEventListener('shown.bs.toast', function (event) {
             document.getElementById("stBar").classList.add("shrink");
           })
@@ -253,6 +310,23 @@
             
           });
           
+        }
+      },
+      async deleteItem() {
+        const res = await this.$services.item.deleteItem(this.item.itemID);
+        
+        if (res) {
+          this.saveToast.color = "danger";
+          this.saveToast.header = "Gelöscht!";
+          this.saveToast.body = "Das Item wurde gelöscht!";
+          document.getElementById("saveToast").addEventListener('shown.bs.toast', function (event) {
+            document.getElementById("stBar").classList.add("shrink");
+          })
+          new Promise(resolve => setTimeout(resolve, 200)).then(() => {
+            //Has to be inside a promise to wait until nuxt has refreshed the page
+            let toast = bootstrap.Toast.getOrCreateInstance(document.getElementById("saveToast"));
+            toast.show();
+          });
         }
       }
     },

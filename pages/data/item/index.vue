@@ -1,17 +1,20 @@
 <template>
   <div>
     <h1>Items</h1>
+    <item-edit :itemNames="itemNames" />
     <item-list :items="items" />
   </div>
 </template>
 
 <script>
   import Item from '~/components/data/Item.vue'
+  import ItemEdit from '~/components/data/ItemEdit.vue'
   import ItemList from '~/components/data/ItemList.vue'
 
   export default {
     components: {
       Item,
+      ItemEdit,
       ItemList
     },
     data() {
@@ -27,6 +30,12 @@
           default() {
             return [];
           }
+        },
+        itemNames: {
+          type: Array,
+          default() {
+            return [];
+          }
         }
       };
     },
@@ -37,7 +46,8 @@
       try {
         return {
           items: items,
-          ressources: res
+          ressources: res,
+          itemNames: await ctx.$services.item.findAllNames()
         };
       } catch (error) {
 

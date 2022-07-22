@@ -3,6 +3,16 @@ export default class Item {
     this.itemID = itemID;
     this.name = name;
     this.type = type;
+    /*
+     * Prices:
+     * [
+     *    {
+     *      item: Number, //ItemID
+     *      type: String, //Price Type
+     *      value: Number
+     *    }
+     * ]
+     */
     this.prices = [];
     /*
      * Blueprint-Object:

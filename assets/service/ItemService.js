@@ -138,6 +138,18 @@ export default class ItemApi {
     })
   }
 
+  deleteItem(id) {
+    return this.axios({
+      method: 'delete',
+      url: 'item/' + id,
+      withCredentials: true
+    }).then((response) => {
+      return true;
+    }).catch(() => {
+      return false;
+    })
+  }
+
   itemToJSON(item) {
     var res = {
       itemID: item.itemID,
