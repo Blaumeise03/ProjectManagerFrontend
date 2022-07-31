@@ -3,6 +3,7 @@ import TransactionService from '~/assets/service/TransactionService'
 import PlayerService from '~/assets/service/PlayerService'
 import CorpService from '~/assets/service/CorpService'
 import ItemService from '~/assets/service/ItemService'
+import ProjectService from '~/assets/service/ProjectService'
 import UUIDService from '~/assets/service/UUIDService'
 
 export default (ctx, inject) => {
@@ -12,6 +13,7 @@ export default (ctx, inject) => {
     player: new PlayerService(ctx.$axios),
     corp: new CorpService(ctx.$axios),
     item: new ItemService(ctx.$axios),
+    project: new ProjectService(ctx.$axios),
     uuid: new UUIDService()
   }
 

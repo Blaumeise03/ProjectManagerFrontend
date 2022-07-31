@@ -23,11 +23,20 @@
           <h1 class="icon-label">Neu</h1>
         </NuxtLink>
       </div>
+      
+    </div>
+    <div class="d-flex flex-wrap">
       <!--Link to the item list page-->
       <div class="flex-fill link-btn p-0">
         <NuxtLink to="/data/item">
           <div class="icon bi bi-clipboard2-data"></div>
           <h1 class="icon-label">Items</h1>
+        </NuxtLink>
+      </div>
+      <div class="flex-fill link-btn p-0">
+        <NuxtLink to="/project/1">
+          <div class="icon bi bi-graph-up-arrow"></div>
+          <h1 class="icon-label">Projekte</h1>
         </NuxtLink>
       </div>
     </div>
