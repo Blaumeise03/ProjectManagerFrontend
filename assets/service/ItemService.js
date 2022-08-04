@@ -28,7 +28,7 @@ export default class ItemApi {
       withCredentials: true
     }).then((response) => {
       const d = response.data;
-      return this.parseFullItem(d);
+      return Item.parseFullItem(d);
     })
   }
 
@@ -41,7 +41,7 @@ export default class ItemApi {
       withCredentials: true
     }).then((response) => {
       const d = response.data;
-      return this.parseFullItem(d);
+      return Item.parseFullItem(d);
     })
   }
 
@@ -54,7 +54,7 @@ export default class ItemApi {
       const d = response.data;
       var items = [];
       response.data.forEach((d) => {
-        items.push(this.parseFullItem(d));
+        items.push(Item.parseFullItem(d));
       })
       return items;
     })
@@ -111,20 +111,6 @@ export default class ItemApi {
     })
   }
 
-  parseFullItem(data) {
-    var item = new Item(data.itemID, data.itemName, data.itemType);
-    if (data.prices != null) {
-      data.prices.forEach((p) => {
-        item.prices.push(new Price(p.item, p.priceType, p.value));
-      });
-    }
-    if (data.blueprint != null) {
-      this.parseBlueprint(item, data.blueprint)
-    }
-    //console.log(data)
-    return item;
-  }
-
   save(item) {
     return this.axios({
       method: 'post',
@@ -179,19 +165,5 @@ export default class ItemApi {
       });
     }
     return res;
-  }
-
-  parseBlueprint(item, bp) {
-    item.blueprint = {};
-    item.blueprint.baseCost = [];
-    bp.baseCost.forEach((b) => {
-      item.blueprint.baseCost.push({
-        itemID: b.item,
-        itemName: b.itemName,
-        quantity: b.quantity
-      });
-    });
-    item.blueprint.resultQuantity = bp.resultQuantity;
-    item.blueprint.stationFees = bp.stationFees;
   }
 }

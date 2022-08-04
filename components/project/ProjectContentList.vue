@@ -1,10 +1,10 @@
 <template>
   <div>
     <h2>Kosten</h2>
-    <div class="form-check form-switch">
+    <!--div class="form-check form-switch">
       <input v-model.boolean="edit" class="form-check-input" type="checkbox" id="editModeSwitch" name="editMode" value="true" checked>
       <label class="form-check-label" for="editModeSwitch">Edit Mode</label>
-    </div>
+    <div-->
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped">
         <thead>
@@ -22,7 +22,37 @@
         <tbody>
           <project-content-row v-for="content in project.content" class="project-content" :edit="edit" :projectContent="content" :parent="getParent(content.parent)" :costTypes="costTypes" :key="'pc-' + content.id" />
         </tbody>
+        <tfoot>
+          <tr>
+            <td v-if="edit"></td>
+            <td v-if="edit"></td>
+            <td v-if="edit"></td>
+            <td>Summe</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td v-for="sum in sums">{{ sum }}</td>
+          </tr>
+        </tfoot>
       </table>
+    </div>
+    <div class="mt-2">
+      <h3>Item hinzufügen</h3>
+      <div class="row">
+        <div class="input-group col-md mt-2">
+          <!--Add Item Data-->
+          <button class="btn btn-outline-primary" type="button" @click="addContent()"><i class="bi bi-plus-circle"></i></button>
+          <input v-model="newContentItemName" type="text" list="itemNames" class="form-control min-1" id="newContentItemName" autocomplete="off" placeholder="Item Name" pattern="[a-zA-Z0-9]*( *[a-zA-Z0-9]+)*" />
+        </div>
+        <div class="input-group col-md mt-2">
+          <span class="input-group-text">Menge: </span>
+          <input v-model.number="newContentQuantity" type="number" min="1" step="1" class="form-control min-1" id="newContentQ" required pattern="[0-9]+" />
+
+          <datalist id="itemNames">
+            <option v-for="name in itemNames">{{ name }}</option>
+          </datalist>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -40,7 +70,19 @@
         default() {
           return null;
         }
-      }      
+      },
+      itemNames: {
+        type: Array,
+        default() {
+          return [];
+        }
+      },
+      edit: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      }
     },
     data() {
       return {
@@ -48,11 +90,15 @@
          * Format:
          * {
          *    id: Number,
-         *    name: String
+         *    name: String,
+         *    sum: Number //Optional
          * }
          */
         costTypes: [],
-        edit: false,
+        sums:[],
+        newContentItemName: "",
+        newContentQuantity: 1,
+        itemSum: []
       }
     },
     computed: {
@@ -75,6 +121,34 @@
             break;
           }
         }
+      },
+      async addContent() {
+        let item = await this.$services.item.findByName(this.newContentItemName);
+        let order = 0;
+        let id = -1;
+        for (let content of this.project.content) {
+          if (!content.isChild && content.order >= order) {
+            order = content.order + 1;
+          }
+          if (content.id <= id) {
+            id = content.id - 1;
+          }
+        }
+        this.project.content.push({
+          amount: this.newContentQuantity,
+          auto: false,
+          build: 0,
+          childs: [],
+          efficiency: 0.92,
+          id: id,
+          isChild: false,
+          item: item,
+          itemID: item.itemID,
+          order: order,
+          parent: null,
+          project: this.project.id
+        });
+        this.updateOrder;
       },
       moveContentUp(element) {
         this.moveContent(element, -1);
@@ -131,6 +205,92 @@
             break;
           }
         }
+      },
+      makeContentParent(element) {
+        if (element.isChild) {
+          let index = this.project.content.indexOf(element);
+          let newOrder = null;
+          for (let i = index + 1; i < this.project.content.length; i++) {
+            let el = this.project.content[i];
+            if (!el.isChild) {
+              if (newOrder == null) newOrder = el.order;
+              el.order++;
+            }
+          }
+          if (newOrder == null) {
+            for (let i = this.project.content.length - 1; i >= 0; i--) {
+              let el = this.project.content[i];
+              if (!el.isChild) {
+                if (newOrder == null) newOrder = el.order + 1;
+                break;
+              }
+            }
+          }
+          element.order = newOrder;
+          for (let e of this.project.content) {
+            if (e.id === element.parent) {
+              let ind = -1;
+              for (let i in e.childs) {
+                if (e.childs[i].id == element.id) {
+                  ind = i;
+                  break;
+                }
+              }
+              if (ind >= 0) e.childs.splice(ind, 1);
+              break;
+            }
+          }
+          element.parent = null;
+          element.auto = false;
+          element.isChild = false;
+          this.updateOrder();
+        }
+      },
+      makeContentChild(element) {
+        let index = this.project.content.indexOf(element);
+        if (index > 0) {
+          for (let i = index - 1; i >= 0; i--) {
+            let el = this.project.content[i];
+            if (!el.isChild) {
+              el.childs.push(element);
+              element.isChild = true;
+              element.parent = el.id;
+              for (let e of element.childs) {
+                el.childs.push(e);
+                e.parent = el.id;
+              }
+              element.childs = [];
+              element.auto = true;
+              this.updateOrder;
+              return;
+            }
+          }
+        }
+        console.warn("Can't make content " + element.id + " at index " + index + " to child!")
+      },
+      computeSum() {
+        for (let item of this.costTypes) {
+          item.sum = 0;
+          for (let content of this.project.content) {
+            if (content.item.blueprint) {
+              let parent = this.getParent(content.parent);
+              for (let cost of content.item.blueprint.baseCost) {
+                if (cost.itemID === item.id) {
+                  let multi = 1;
+                  if (content.auto === true && parent) {
+                    multi = parent.amount;
+                  }
+                  item.sum += (cost.quantity / 1.5 * content.efficiency * content.amount * multi);
+                  break;
+                }
+              }
+            }
+          }
+        }
+        this.sums = [];
+        for (let i in this.costTypes) {
+          this.sums[i] = this.costTypes[i].sum.toLocaleString("en-US");
+        }
       }
     },
     mounted() {
@@ -140,14 +300,14 @@
           for (let bCost of content.item.blueprint.baseCost) {
             let exists = false;
             for (let t of res) {
-              if (t.id == bCost.item) {
+              if (t.id == bCost.itemID) {
                 exists = true;
                 break;
               }
             }
             if (!exists) {
               res.push({
-                id: bCost.item,
+                id: bCost.itemID,
                 name: bCost.itemName
               });
             }
@@ -155,13 +315,15 @@
         }
       }
       this.costTypes = res;
+      this.computeSum();
     }
   }
 </script>
 
 <style lang="scss">
 
-  /*thead th {
+  /*//Stick table column
+    thead th {
     position: -webkit-sticky; /* for Safari *
     position: sticky;
     top: 0;

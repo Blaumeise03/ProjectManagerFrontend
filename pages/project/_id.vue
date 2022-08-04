@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Project {{ projectID }}</h1>
-    <project :project="project"/>
+    <project :project="project" :itemNames="itemNames" />
   </div>
 </template>
 
@@ -25,14 +25,16 @@
           default() {
             return null;
           }
-        }
+        },
+        itemNames: [],
       }
     },
     async asyncData(ctx) {
 
       return {
         projectID: Number(ctx.route.params.id),
-        project: await ctx.app.$services.project.findByID(ctx.route.params.id)
+        project: await ctx.app.$services.project.findByID(ctx.route.params.id),
+        itemNames: await ctx.$services.item.findAllNames(),
       }
     }
   }

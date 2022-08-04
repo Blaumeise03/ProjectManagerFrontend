@@ -1,4 +1,5 @@
 import Project from '~/assets/data/Project.class'
+import Item from '~/assets/data/Item.class'
 
 export default class CorpService {
   constructor($axios) {
@@ -14,6 +15,11 @@ export default class CorpService {
       withCredentials: true
     }).then((response) => {
       const p = response.data;
+      for (let c of p.content) {
+        if (c.item) {
+          c.item = Item.parseFullItem(c.item);
+        }
+      }
       let project = new Project(p.id, p.corp, p.name, p.created, p.content, p.revenue);
       let content = []
       let childs = []
@@ -21,7 +27,6 @@ export default class CorpService {
         c.childs = []
         c.isChild = false;
         c.auto = false;
-        c.delete = false;
         if (c.parent == null) {
           content.push(c);
         } else {
@@ -41,6 +46,40 @@ export default class CorpService {
       project.content = content;
       this.orderProjectContent(project);
       return project;
+    }).catch(() => {
+      return null;
+    })
+  }
+
+  save(project) {
+    let data = {};
+    data.id = project.id;
+    data.corp = project.corpID;
+    data.name = project.name;
+    data.created = project.created;
+    data.revenue = project.revenue;
+    data.content = [];
+    for (let c of project.content) {
+      data.content.push({
+        id: c.id,
+        project: data.id,
+        itemID: c.itemID,
+        order: c.order,
+        amount: c.amount,
+        build: c.build,
+        efficiency: c.efficiency,
+        parent: c.parent
+      });
+    }
+    return this.axios({
+      method: 'post',
+      url: 'project',
+      data: data,
+      withCredentials: true
+    }).then((response) => {
+      return true;
+    }).catch(() => {
+      return false;
     })
   }
 

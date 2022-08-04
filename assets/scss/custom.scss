@@ -12,6 +12,11 @@
 @import '~/node_modules/bootstrap/scss/bootstrap.scss';
 @import '~/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
+.collapsing.no-transition {
+  -webkit-transition: none;
+  transition: none;
+}
+
 .code {
   font-family: 'Courier New', monospace;
   font-size: 10pt;
