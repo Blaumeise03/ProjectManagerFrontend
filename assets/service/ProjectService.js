@@ -44,6 +44,7 @@ export default class CorpService {
         }
       }
       project.content = content;
+      project.defaultPrice = "MARKET_LOWEST_SELL";
       this.orderProjectContent(project);
       return project;
     }).catch(() => {

@@ -16,6 +16,8 @@
             <th>Fertig</th>
             <th>Geplant</th>
             <th>Effizienz</th>
+            <th>Stationsgebühr</th>
+            <th>Blueprint</th>
             <th v-for="item in costTypes" nowrap>{{ item.name }}</th>
           </tr>
         </thead>
@@ -23,7 +25,19 @@
           <project-content-row v-for="content in project.content" class="project-content" :edit="edit" :projectContent="content" :parent="getParent(content.parent)" :costTypes="costTypes" :key="'pc-' + content.id" />
         </tbody>
         <tfoot>
-          <tr>
+          <tr class="content-child" data-bs-toggle="collapse" data-bs-target=".contentPrices">
+            <td v-if="edit"></td>
+            <td v-if="edit"></td>
+            <td v-if="edit"></td>
+            <td><i class="bi bi-caret-down"></i>Kosten</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{ project.iskCosts }} ISK</td>
+            <td></td>
+            <td v-for="sum in sums" nowrap>{{ sum.price }} ISK</td>
+          </tr>
+          <tr class="content-child collapse no-transition contentPrices">
             <td v-if="edit"></td>
             <td v-if="edit"></td>
             <td v-if="edit"></td>
@@ -31,7 +45,33 @@
             <td></td>
             <td></td>
             <td></td>
-            <td v-for="sum in sums">{{ sum }}</td>
+            <td></td>
+            <td></td>
+            <td v-for="sum in sums">{{ sum.amount }}</td>
+          </tr>
+          <tr class="content-child collapse no-transition contentPrices">
+            <td v-if="edit"></td>
+            <td v-if="edit"></td>
+            <td v-if="edit"></td>
+            <td>Ausstehend</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td v-for="sum in sums">{{ sum.pending }}</td>
+          </tr>
+          <tr class="content-child collapse no-transition contentPrices">
+            <td v-if="edit"></td>
+            <td v-if="edit"></td>
+            <td v-if="edit"></td>
+            <td>Marktpreis</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td v-for="item in costTypes" nowrap>{{ getPriceString(item) }} ISK</td>
           </tr>
         </tfoot>
       </table>
@@ -42,15 +82,14 @@
         <div class="input-group col-md mt-2">
           <!--Add Item Data-->
           <button class="btn btn-outline-primary" type="button" @click="addContent()"><i class="bi bi-plus-circle"></i></button>
-          <input v-model="newContentItemName" type="text" list="itemNames" class="form-control min-1" id="newContentItemName" autocomplete="off" placeholder="Item Name" pattern="[a-zA-Z0-9]*( *[a-zA-Z0-9]+)*" />
+          <datalist id="itemNames">
+            <option v-for="name in itemNames">{{ name }}</option>
+          </datalist>
+          <input v-model="newContentItemName" type="text" list="itemNames" class="form-control min-1" id="newContentItemName" autocomplete="on" placeholder="Item Name" pattern="[a-zA-Z0-9]*( *[a-zA-Z0-9]+)*" />
         </div>
         <div class="input-group col-md mt-2">
           <span class="input-group-text">Menge: </span>
           <input v-model.number="newContentQuantity" type="number" min="1" step="1" class="form-control min-1" id="newContentQ" required pattern="[0-9]+" />
-
-          <datalist id="itemNames">
-            <option v-for="name in itemNames">{{ name }}</option>
-          </datalist>
         </div>
       </div>
     </div>
@@ -124,31 +163,35 @@
       },
       async addContent() {
         let item = await this.$services.item.findByName(this.newContentItemName);
-        let order = 0;
-        let id = -1;
-        for (let content of this.project.content) {
-          if (!content.isChild && content.order >= order) {
-            order = content.order + 1;
+        if (item) {
+          let order = 0;
+          let id = -1;
+          for (let content of this.project.content) {
+            if (!content.isChild && content.order >= order) {
+              order = content.order + 1;
+            }
+            if (content.id <= id) {
+              id = content.id - 1;
+            }
           }
-          if (content.id <= id) {
-            id = content.id - 1;
+          this.project.content.push({
+            amount: this.newContentQuantity,
+            auto: false,
+            build: 0,
+            childs: [],
+            efficiency: 0.92,
+            id: id,
+            isChild: false,
+            item: item,
+            itemID: item.itemID,
+            order: order,
+            parent: null,
+            project: this.project.id
+          });
+          this.updateOrder;
+          this.newContentQuantity = 1;
+          this.newContentItemName = "";
           }
-        }
-        this.project.content.push({
-          amount: this.newContentQuantity,
-          auto: false,
-          build: 0,
-          childs: [],
-          efficiency: 0.92,
-          id: id,
-          isChild: false,
-          item: item,
-          itemID: item.itemID,
-          order: order,
-          parent: null,
-          project: this.project.id
-        });
-        this.updateOrder;
       },
       moveContentUp(element) {
         this.moveContent(element, -1);
@@ -271,29 +314,65 @@
       computeSum() {
         for (let item of this.costTypes) {
           item.sum = 0;
+          item.pending = 0;
           for (let content of this.project.content) {
             if (content.item.blueprint) {
               let parent = this.getParent(content.parent);
               for (let cost of content.item.blueprint.baseCost) {
                 if (cost.itemID === item.id) {
-                  let multi = 1;
+                  let amount = content.amount;
+                  let build = 0;
                   if (content.auto === true && parent) {
-                    multi = parent.amount;
+                    amount = parent.amount * content.amount;
+                    build = parent.build * content.amount;
+                  } else {
+                    build = content.build;
                   }
-                  item.sum += (cost.quantity / 1.5 * content.efficiency * content.amount * multi);
+                  item.sum += (cost.quantity / 1.5 * content.efficiency * amount);
+                  item.pending += (cost.quantity / 1.5 * content.efficiency * (amount - build))
                   break;
                 }
               }
             }
           }
         }
+        let iskCosts = 0;
+        for (let content of this.project.content) {
+          if (content.item.blueprint) {
+            let amount = content.amount;
+            let parent = this.getParent(content.parent);
+            if (content.auto === true && parent) {
+              amount = parent.amount * content.amount;
+            }
+            iskCosts += content.item.blueprint.stationFees * amount;
+          }
+        }
         this.sums = [];
         for (let i in this.costTypes) {
-          this.sums[i] = this.costTypes[i].sum.toLocaleString("en-US");
+          let price = this.getPrice(this.costTypes[i]);
+          this.sums[i] = {
+            amount: this.costTypes[i].sum.toLocaleString("en-US", { maximumFractionDigits: 0 }),
+            pending: this.costTypes[i].pending.toLocaleString("en-US", { maximumFractionDigits: 0 }),
+            price: (this.costTypes[i].sum * price).toLocaleString("en-US", { maximumFractionDigits: 0 })
+          };
         }
+        this.project.iskCosts = iskCosts.toLocaleString("en-US", { maximumFractionDigits: 0 });
+      },
+      getPrice(costType) {
+        if (costType && costType.prices) {
+          for (let p of costType.prices) {
+            if (p.priceType == this.project.defaultPrice) {
+              return p.value;
+            }
+          }
+        }
+        return 0;
+      },
+      getPriceString(costType) {
+        return this.getPrice(costType).toLocaleString("en-US");
       }
     },
-    mounted() {
+    async mounted() {
       let res = [];
       for (let content of this.project.content) {
         if (content.item.blueprint) {
@@ -315,6 +394,20 @@
         }
       }
       this.costTypes = res;
+      let costIDs = [];
+      for (let c of this.costTypes) {
+        costIDs.push(c.id);
+      }
+      let prices = await this.$services.item.batchLoadPricesByIDs(costIDs);
+      for (let c of this.costTypes) {
+        c.prices = [];
+        for (let [id, p] of Object.entries(prices)) {
+          if (id == c.id) {
+            c.prices = p;
+            break;
+          }
+        }
+      }
       this.computeSum();
     }
   }

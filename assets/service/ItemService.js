@@ -16,6 +16,8 @@ export default class ItemApi {
     }).then((response) => {
       const d = response.data;
       return new Item(d.itemID, d.itemName, d.itemType);
+    }).catch(() => {
+      return null;
     })
   }
 
@@ -29,6 +31,8 @@ export default class ItemApi {
     }).then((response) => {
       const d = response.data;
       return Item.parseFullItem(d);
+    }).catch(() => {
+      return null;
     })
   }
 
@@ -42,6 +46,8 @@ export default class ItemApi {
     }).then((response) => {
       const d = response.data;
       return Item.parseFullItem(d);
+    }).catch(() => {
+      return null;
     })
   }
 
@@ -57,6 +63,8 @@ export default class ItemApi {
         items.push(Item.parseFullItem(d));
       })
       return items;
+    }).catch(() => {
+      return [];
     })
   }
 
@@ -72,6 +80,8 @@ export default class ItemApi {
         items.push(d);
       })
       return items;
+    }).catch(() => {
+      return [];
     })
   }
 
@@ -87,8 +97,24 @@ export default class ItemApi {
       response.data.forEach((d) => {
         item.prices.push(new Price(d.item, d.priceType, d.value));
       });
-      
       return item;
+    }).catch(() => {
+      return null;
+    })
+  }
+
+  batchLoadPricesByIDs(ids) {
+    if (ids == null) return null;
+    return this.axios({
+      method: 'post',
+      url: 'item/prices',
+      data: ids,
+      withCredentials: true
+    }).then((response) => {
+      let res = response.data;
+      return res;
+    }).catch(() => {
+      return [];
     })
   }
 

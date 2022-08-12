@@ -14,8 +14,8 @@
       </div>
     </td>
     <td class="content-name" data-bs-toggle="collapse" :data-bs-target="'.parent-id-' + projectContent.id" nowrap>{{ projectContent.item.name }}</td>
-    <td v-if="!projectContent.auto" nowrap><input class="form-control-plaintext" v-model.number="projectContent.build" type="number" min="0" step="1" /></td>
-    <td v-if="!projectContent.auto" nowrap><input class="form-control-plaintext" v-model.number="projectContent.amount" type="number" min="0" step="1" /></td>
+    <td v-if="!projectContent.auto" nowrap><input class="form-control-plaintext" v-model.number="projectContent.build" type="number" min="0" step="1" :disabled="edit ? false : true" /></td>
+    <td v-if="!projectContent.auto" nowrap><input class="form-control-plaintext" v-model.number="projectContent.amount" type="number" min="0" step="1" :disabled="edit ? false : true" /></td>
     <td v-if="projectContent.auto" class="inline-td" nowrap>
       <span class="inline">{{ getBuild }}</span>
     </td>
@@ -25,6 +25,8 @@
       <span class="inline">{{ getPlanned }}</span>
     </td>
     <td nowrap><input class="form-control-plaintext" v-model.number="projectContent.efficiency" type="number" min="0" step="0.01" /></td>
+    <td>{{ getStationFees}} ISK</td>
+    <td>{{ getBlueprintPrice }} ISK</td>
     <td v-for="cost in costTypes" nowrap>{{ getCostAmount(cost.id) }}</td>
   </tr>
 </template>
@@ -60,15 +62,23 @@
     computed: {
       getBuild() {
         if (this.parent != null) {
-          return this.parent.build * this.projectContent.amount;
+          return this.parent.build * this.projectContent.amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
         }
-        return this.projectContent.build;
+        return this.projectContent.build.toLocaleString("en-US", { maximumFractionDigits: 0 });
       },
       getPlanned() {
         if (this.parent != null) {
-          return this.parent.amount * this.projectContent.amount;
+          return this.parent.amount * this.projectContent.amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
         }
-        return this.projectContent.amount;
+        return this.projectContent.amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
+      },
+      getStationFees() {
+        if (this.projectContent.item.blueprint)
+          return this.projectContent.item.blueprint.stationFees.toLocaleString("en-US", { maximumFractionDigits: 0 });
+        return 0;
+      },
+      getBlueprintPrice() {
+        return 0;
       }
     },
     methods: {
@@ -76,7 +86,7 @@
         if (this.projectContent.item.blueprint) {
           for (let cost of this.projectContent.item.blueprint.baseCost) {
             if (cost.itemID == itemID) {
-              return (cost.quantity / 1.5 * this.projectContent.efficiency * this.getPlanned).toLocaleString("en-US");
+              return (cost.quantity / 1.5 * this.projectContent.efficiency * this.getPlanned).toLocaleString("en-US", { maximumFractionDigits: 0 });
               break;
             }
           }
@@ -111,6 +121,9 @@
       "projectContent.amount"() {
         this.$parent.computeSum();
       },
+      "projectContent.build"() {
+        this.$parent.computeSum();
+      },
       "projectContent.efficiency"() {
         this.$parent.computeSum();
       }
@@ -129,7 +142,6 @@
 
   .inline {
     display: inline-block;
-
   }
 
   .inline-td {

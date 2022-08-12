@@ -24,8 +24,8 @@
         <div class="toast-body" id="saveToastBody">
           {{ saveToast.body }}
         </div>
-        <div class="progress" id="stBarP">
-          <div id="stBar" class="progress-bar" :class="'bg-' + saveToast.color"></div>
+        <div class="progress save-bar-parent" id="stBarP">
+          <div id="stBar" class="progress-bar save-bar" :class="'bg-' + saveToast.color"></div>
         </div>
       </div>
     </div>
@@ -86,8 +86,7 @@
             body: "Das Projekt wurde gespeichert. Seite wird neugeladen..."
           };
           new Promise(resolve => setTimeout(resolve, 5000)).then(() => {
-            //document.location.reload();
-            console.log("reload");
+            document.location.reload();
           });
         } else {
           this.saveToast = {
@@ -104,7 +103,6 @@
           let toast = bootstrap.Toast.getOrCreateInstance(document.getElementById("saveToast"));
           toast.show();
         });
-        console.log("showing toast")
       }
     }
   }
