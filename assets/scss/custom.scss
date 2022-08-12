@@ -121,3 +121,29 @@
     border-right-style: none;
   }
 }
+
+.save-bar-parent {
+  height: 4px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.save-bar {
+  transition: width 5s;
+}
+
+.shrink {
+  animation-duration: 5s;
+  animation-iteration-count: 1;
+  animation-name: toastBar;
+}
+
+@keyframes toastBar {
+  from {
+    width: 100%
+  }
+
+  to {
+    width: 0%
+  }
+}

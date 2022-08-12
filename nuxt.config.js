@@ -1,9 +1,9 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'frontend',
+    title: 'Project Manager',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'de'
     },
     meta: [
       { charset: 'utf-8' },
@@ -84,10 +84,11 @@ export default {
     prefix: '/api/'
   },
   proxy: {
-    '/api/': 'http://localhost:8081/'
+    '/api/': process.env.C_API_URL || 'http://localhost:8081/',
   },
   server: {
-    host: '0.0.0.0' // default: localhost
+    host: '0.0.0.0', // default: localhost
+    port: process.env.C_PORT || 3000
   }
 
   // use these settings to use custom css

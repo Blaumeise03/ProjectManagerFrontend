@@ -125,8 +125,8 @@
         <div class="toast-body" id="saveToastBody">
           {{ saveToast.body }}
         </div>
-        <div class="progress" id="stBarP">
-          <div id="stBar" class="progress-bar" :class="'bg-' + saveToast.color"></div>
+        <div class="progress save-bar-parent" id="stBarP">
+          <div id="stBar" class="progress-bar save-bar" :class="'bg-' + saveToast.color"></div>
         </div>
       </div>
     </div>
@@ -376,26 +376,5 @@
   .min-1 {
     flex-basis: 200px !important;
   }
-  #stBarP {
-    height: 4px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-  #stBar {
-    transition: width 5s;
-  }
-  .shrink {
-     animation-duration: 5s;
-     animation-iteration-count: 1;
-     animation-name: toastBar;
-  }
 
-  @keyframes toastBar {
-      from {
-          width: 100%
-      }
-      to {
-          width: 0%
-      }
-  }
 </style>
