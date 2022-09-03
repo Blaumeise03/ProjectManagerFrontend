@@ -29,9 +29,9 @@ export default class ContractService {
       data: Contract.toData(contract),
       withCredentials: true
     }).then((response) => {
-      
+      return true;
     }).catch(() => {
-      return null;
+      return false;
     })
   }
 }

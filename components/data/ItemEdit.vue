@@ -121,21 +121,6 @@
         </div>
       </form>
     </div>
-    <!--Toasts-->
-    <div class="position-fixed bottom-0 center p-3" style="z-index: 11">
-      <div id="saveToast" class="toast border hide" :class="'border-' + saveToast.color" data-bs-delay="5000">
-        <div class="toast-header" id="saveToastHeader">
-          {{ saveToast.header }}
-          <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-body" id="saveToastBody">
-          {{ saveToast.body }}
-        </div>
-        <div class="progress save-bar-parent" id="stBarP">
-          <div id="stBar" class="progress-bar save-bar" :class="'bg-' + saveToast.color"></div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -189,11 +174,6 @@
         newItemQuantity: 1,
         errorMsg: null,
         unsavedChanges: false,
-        saveToast: {
-          color: "success",
-          header: "Gespeichert!",
-          body: "Das Item wurde gespeichert."
-        },
         newPrice: {
           type: "",
           value: 0
@@ -307,31 +287,21 @@
         const res = await this.$services.item.save(this.item);
         if (res) {
           this.unsavedChanges = false;
-          let toast = bootstrap.Toast.getOrCreateInstance(document.getElementById("saveToast"));
-          document.getElementById("saveToast").addEventListener('shown.bs.toast', function (event) {
-            document.getElementById("stBar").classList.add("shrink");
-          })
-          toast.show();
-          new Promise(resolve => setTimeout(resolve, 100)).then(() => {
-            
-          });
-          
+          this.$nuxt.$eventHub.$emit("toast-show", {
+            color: "success",
+            header: "Gespeichert!",
+            msg: "Das Item wurde gespeichert."
+          });       
         }
       },
       async deleteItem() {
         const res = await this.$services.item.deleteItem(this.item.itemID);
         
         if (res) {
-          this.saveToast.color = "danger";
-          this.saveToast.header = "Gelöscht!";
-          this.saveToast.body = "Das Item wurde gelöscht!";
-          document.getElementById("saveToast").addEventListener('shown.bs.toast', function (event) {
-            document.getElementById("stBar").classList.add("shrink");
-          })
-          new Promise(resolve => setTimeout(resolve, 200)).then(() => {
-            //Has to be inside a promise to wait until nuxt has refreshed the page
-            let toast = bootstrap.Toast.getOrCreateInstance(document.getElementById("saveToast"));
-            toast.show();
+          this.$nuxt.$eventHub.$emit("toast-show", {
+            color: "danger",
+            header: "Gelöscht!",
+            msg: "Das Item wurde gelöscht!"
           });
         }
       }

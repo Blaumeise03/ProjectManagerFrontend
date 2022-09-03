@@ -73,7 +73,16 @@
         }
         let time = moment(this.timeCreated);
         this.contract.created = time.unix();
-        this.$services.contract.save(this.contract);
+        let res = await this.$services.contract.save(this.contract);
+        if (res) {
+          this.$nuxt.$eventHub.$emit("toast-show", {
+            color: "success", header: "Gespeichert!", msg: "Vertrag wurde gespeichert!"
+          });
+        } else {
+          this.$nuxt.$eventHub.$emit("toast-show", {
+            color: "danger", header: "Fehler!", msg: "Vertrag wurde nicht gespeichert!"
+          });
+        }
       }
     },
     mounted() {

@@ -36,12 +36,15 @@
       </div>
     </div>
 
+    <!--Toast-->
+    <toast />
   </div>
 </template>
 
 <script>
   import Navbar from '~/components/Navbar.vue'
   import ErrorModal from '~/components/ErrorModal.vue'
+  import Toast from '~/components/Toast.vue'
 
   export default {
     components: {

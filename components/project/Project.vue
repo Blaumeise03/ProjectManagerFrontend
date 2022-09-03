@@ -14,21 +14,6 @@
       <button v-if="edit" class="btn btn-primary my-2" type="submit">Speichern</button>
       <project-content-list :project="project" :itemNames="itemNames" :edit="edit" />
     </form>
-    <!--Toasts-->
-    <div class="position-fixed bottom-0 center p-3" style="z-index: 1200">
-      <div id="saveToast" class="toast border hide" :class="'border-' + saveToast.color" data-bs-delay="5000">
-        <div class="toast-header" id="saveToastHeader">
-          {{ saveToast.header }}
-          <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-body" id="saveToastBody">
-          {{ saveToast.body }}
-        </div>
-        <div class="progress save-bar-parent" id="stBarP">
-          <div id="stBar" class="progress-bar save-bar" :class="'bg-' + saveToast.color"></div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -58,12 +43,7 @@
       return {
         locked: true,
         timeCreated: "",
-        edit: false,
-        saveToast: {
-          color: "success",
-          header: "Gespeichert!",
-          body: "Das Projekt wurde gespeichert."
-        },
+        edit: false
       }
     },
     mounted() {
@@ -80,29 +60,21 @@
         let res = await this.$services.project.save(this.project);
         console.log(res)
         if (res) {
-          this.saveToast = {
+          this.$nuxt.$eventHub.$emit("toast-show", {
             color: "success",
             header: "Gespeichert!",
-            body: "Das Projekt wurde gespeichert. Seite wird neugeladen..."
-          };
+            msg: "Das Projekt wurde gespeichert. Seite wird neugeladen..."
+          });
           new Promise(resolve => setTimeout(resolve, 5000)).then(() => {
             document.location.reload();
           });
         } else {
-          this.saveToast = {
+          this.$nuxt.$eventHub.$emit("toast-show", {
             color: "danger",
             header: "Fehler!",
-            body: "Das Projekt konnte nicht gespeichert werden."
-          };
+            msg: "Das Projekt konnte nicht gespeichert werden."
+          });
         }
-        document.getElementById("saveToast").addEventListener('shown.bs.toast', function (event) {
-          document.getElementById("stBar").classList.add("shrink");
-        })
-        new Promise(resolve => setTimeout(resolve, 200)).then(() => {
-          //Has to be inside a promise to wait until nuxt has refreshed the page
-          let toast = bootstrap.Toast.getOrCreateInstance(document.getElementById("saveToast"));
-          toast.show();
-        });
       }
     }
   }
