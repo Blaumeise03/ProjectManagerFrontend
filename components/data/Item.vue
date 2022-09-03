@@ -63,10 +63,8 @@
       }
     },
     data() {
-      const id = this.$services.uuid.getUUID()
-
       return {
-        uuid: id
+
       }
     },
     computed: {

@@ -10,7 +10,7 @@ export default class PlayerAPI {
    * Fetches a player from the API.
    * 
    * @param {number} id The ID of the player.
-   * @returns {Player} THe player with the given ID.
+   * @returns {Player} The player with the given ID.
    */
   findById(id) {
     if (id == null || id == -1) return null;
@@ -18,6 +18,25 @@ export default class PlayerAPI {
     return this.axios({
       method: 'get',
       url: 'player/' + id,
+      withCredentials: true
+    }).then((response) => {
+      const t = response.data;
+      return new Player(t.id, t.name, t.ingameID, t.corp, t.parent, t.user);
+    })
+  }
+
+  /**
+   * Fetches a player from the API.
+   * 
+   * @param {String} name The name of the player.
+   * @returns {Player} The player with the given ID.
+   */
+  findByName(name) {
+    if (name == null) return null;
+
+    return this.axios({
+      method: 'get',
+      url: 'player/name/' + name,
       withCredentials: true
     }).then((response) => {
       const t = response.data;

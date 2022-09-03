@@ -15,6 +15,12 @@
             <input v-model.number="item.itemID" type="number" class="form-control" id="itemID" disabled="true" />
             <div class="invalid-feedback">Muss eine ganze Zahl sein</div>
           </div>
+          <!--Item Order-->
+          <div class="col-sm-4">
+            <label for="itemOrder">Order:</label>
+            <input v-model.number="item.order" type="number" class="form-control" id="itemOrder" disabled="true" />
+            <div class="invalid-feedback">Muss eine ganze Zahl sein</div>
+          </div>
           <!--Item Name-->
           <div class="col-sm-4">
             <label for="itemName">Name: </label>

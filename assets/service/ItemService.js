@@ -15,7 +15,7 @@ export default class ItemApi {
       withCredentials: true
     }).then((response) => {
       const d = response.data;
-      return new Item(d.itemID, d.itemName, d.itemType);
+      return new Item(d.itemID, d.itemName, d.itemType, d.order);
     }).catch(() => {
       return null;
     })
@@ -166,7 +166,8 @@ export default class ItemApi {
     var res = {
       itemID: item.itemID,
       itemName: item.name,
-      itemType: item.type
+      itemType: item.type,
+      order: item.order == -1 ? null : item.order
     };
     if (item.blueprint != null) {
       res.blueprint = {};

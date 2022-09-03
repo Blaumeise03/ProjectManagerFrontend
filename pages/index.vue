@@ -39,6 +39,12 @@
           <h1 class="icon-label">Projekte</h1>
         </NuxtLink>
       </div>
+      <div class="flex-fill link-btn p-0">
+        <NuxtLink to="/project/contract/1">
+          <div class="icon bi bi-clipboard-data"></div>
+          <h1 class="icon-label">Verträge</h1>
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>

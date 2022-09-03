@@ -1,10 +1,13 @@
 import Price from '~/assets/data/Price.class'
 
 export default class Item {
-  constructor(itemID, name, type) {
+  constructor(itemID, name, type, order) {
     this.itemID = itemID;
     this.name = name;
     this.type = type;
+    if (order == null)
+      this.order = -1;
+    else this.order = order;
     /*
      * Prices:
      * [
@@ -41,7 +44,7 @@ export default class Item {
   }
 
   static parseFullItem(data) {
-    var item = new Item(data.itemID, data.itemName, data.itemType);
+    var item = new Item(data.itemID, data.itemName, data.itemType, data.order);
     if (data.prices != null && data.prices != undefined) {
       data.prices.forEach((p) => {
         item.prices.push(new Price(p.item, p.priceType, p.value));

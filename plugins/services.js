@@ -4,7 +4,7 @@ import PlayerService from '~/assets/service/PlayerService'
 import CorpService from '~/assets/service/CorpService'
 import ItemService from '~/assets/service/ItemService'
 import ProjectService from '~/assets/service/ProjectService'
-import UUIDService from '~/assets/service/UUIDService'
+import ContractService from '~/assets/service/ContractService'
 
 export default (ctx, inject) => {
   const services = {
@@ -14,7 +14,7 @@ export default (ctx, inject) => {
     corp: new CorpService(ctx.$axios),
     item: new ItemService(ctx.$axios),
     project: new ProjectService(ctx.$axios),
-    uuid: new UUIDService()
+    contract: new ContractService(ctx.$axios)
   }
 
   inject('services', services)
