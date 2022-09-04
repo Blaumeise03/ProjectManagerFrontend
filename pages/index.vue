@@ -29,7 +29,7 @@
       <!--Link to the item list page-->
       <div class="flex-fill link-btn p-0">
         <NuxtLink to="/data/item">
-          <div class="icon bi bi-clipboard2-data"></div>
+          <div class="icon bi bi-stack"></div>
           <h1 class="icon-label">Items</h1>
         </NuxtLink>
       </div>
@@ -40,7 +40,7 @@
         </NuxtLink>
       </div>
       <div class="flex-fill link-btn p-0">
-        <NuxtLink to="/project/contract/1">
+        <NuxtLink to="/project/contract">
           <div class="icon bi bi-clipboard-data"></div>
           <h1 class="icon-label">Verträge</h1>
         </NuxtLink>

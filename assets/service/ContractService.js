@@ -34,4 +34,56 @@ export default class ContractService {
       return false;
     })
   }
+
+  delete(contractID) {
+    if (contractID == null) return false;
+    //API call
+    return this.axios({
+      method: 'delete',
+      url: 'project/contract/' + contractID,
+      withCredentials: true
+    }).then((response) => {
+      return true;
+    }).catch(() => {
+      return false;
+    })
+  }
+
+  create(newContract) {
+    if (newContract == null) return null;
+    //API call
+    return this.axios({
+      method: 'post',
+      url: 'project/contract/new',
+      data: newContract,
+      withCredentials: true
+    }).then((response) => {
+      let contract = Contract.parseContract(response.data);
+      return contract;
+    }).catch(() => {
+      return false;
+    })
+  }
+
+  findAll(page) {
+    if (!page)
+      page = 0;
+    return this.axios({
+      method: 'get',
+      url: 'project/contract/all',
+      params: {
+        page: page,
+        length: 10
+      },
+      withCredentials: true
+    }).then((response) => { 
+      let contracts = [];
+      for (let d of response.data) {
+        contracts.push(Contract.parseContract(d));
+      }
+      return contracts;
+    }).catch(() => {
+      return [];
+    })
+  }
 }

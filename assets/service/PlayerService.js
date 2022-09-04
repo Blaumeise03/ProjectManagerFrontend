@@ -22,6 +22,8 @@ export default class PlayerAPI {
     }).then((response) => {
       const t = response.data;
       return new Player(t.id, t.name, t.ingameID, t.corp, t.parent, t.user);
+    }).catch((error) => {
+      return null;
     })
   }
 
@@ -41,6 +43,8 @@ export default class PlayerAPI {
     }).then((response) => {
       const t = response.data;
       return new Player(t.id, t.name, t.ingameID, t.corp, t.parent, t.user);
+    }).catch((error) => {
+      return null;
     })
   }
 
@@ -61,6 +65,8 @@ export default class PlayerAPI {
         players.push(new Player(t.id, t.name, t.ingameID, t.corp, t.parent, t.user))
       })
       return players
+    }).catch((error) => {
+      return [];
     })
   }
 
@@ -83,6 +89,8 @@ export default class PlayerAPI {
         players.push(new Player(t.id, t.name, t.ingameID, t.corp, t.parent, t.user))
       })
       return players
+    }).catch((error) => {
+      return [];
     })
   }
 
@@ -104,6 +112,27 @@ export default class PlayerAPI {
         wallets.push(new Wallet(t.id, t.name, t.verified, t.unverified))
       })
       return wallets;
+    }).catch((error) => {
+      return [];
+    })
+  }
+
+  /**
+   * Fetches all players of a corp with a given corp tag.
+   * 
+   * @param {string} tag The tag of the corp.
+   * @returns {string[]} The player names of the given corp.
+   */
+  findNamesByCorpTag(tag) {
+    if (tag == null || tag == "") return [];
+    return this.axios({
+      method: 'get',
+      url: 'player/corpTag/' + tag + '/names',
+      withCredentials: true
+    }).then((response) => {
+      return response.data;
+    }).catch((error) => {
+      return [];
     })
   }
 }

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="container-md box p-4">
     <h1>Vertrag {{ contract.id }}</h1>
     <div class="contract-owner box">Ersteller: {{ player.name }}</div>
@@ -19,8 +19,12 @@
       </datalist>
       <input v-model="playerName" type="text" class="form-control" placeholder="Spielername">
     </div>
-
-    <input v-if="edit" type="button" class="btn btn-success" value="Speichern" @click="save">
+    
+    <div v-if="edit" class="input-group">
+      <button type="button" class="btn btn-success" @click="save">Speichern</button>
+      <button type="button" class="btn btn-danger" @click="deleteContract">Löschen</button>
+    </div>
+    
   </div>
 </template>
 
@@ -81,6 +85,18 @@
         } else {
           this.$nuxt.$eventHub.$emit("toast-show", {
             color: "danger", header: "Fehler!", msg: "Vertrag wurde nicht gespeichert!"
+          });
+        }
+      },
+      async deleteContract() {
+        let res = await this.$services.contract.delete(this.contract.id);
+        if (res) {
+          this.$nuxt.$eventHub.$emit("toast-show", {
+            color: "success", header: "Gelöscht!", msg: "Vertrag wurde gelöscht!"
+          });
+        } else {
+          this.$nuxt.$eventHub.$emit("toast-show", {
+            color: "danger", header: "Fehler!", msg: "Vertrag wurde nicht gelöscht!"
           });
         }
       }

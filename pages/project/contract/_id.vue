@@ -47,10 +47,12 @@
     },
     async asyncData(ctx) {
       let contract = await ctx.app.$services.contract.findByID(ctx.route.params.id);
+      let player = null;
+      if (contract) player = await ctx.app.$services.player.findById(contract.playerID);
       return {
         contractID: Number(ctx.route.params.id),
         contract: contract,
-        player: await ctx.app.$services.player.findById(contract.playerID),
+        player: player,
         itemNames: await ctx.$services.item.findAllNames(),
       }
     }
