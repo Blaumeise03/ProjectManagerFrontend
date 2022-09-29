@@ -22,6 +22,7 @@
           </tr>
         </thead>
         <tbody>
+          <tr v-if="project.content.length == 0"></tr>
           <project-content-row v-for="content in project.content" class="project-content" :edit="edit" :projectContent="content" :parent="getParent(content.parent)" :costTypes="costTypes" :key="'pc-' + content.id" />
         </tbody>
         <tfoot>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Project {{ projectID }}</h1>
+    <h1>Projekt {{ projectID }}</h1>
     <project :project="project" :itemNames="itemNames" />
   </div>
 </template>

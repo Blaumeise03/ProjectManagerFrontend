@@ -11,7 +11,11 @@
           <input v-model="timeCreated" type="datetime-local" class="form-control" :disabled="!edit" placeholder="Name" id="pTime" />
         </div>
       </div>
-      <button v-if="edit" class="btn btn-primary my-2" type="submit">Speichern</button>
+      <div v-if="edit" class="col-md input-group">
+        <button class="btn btn-primary my-2" type="submit">Speichern</button>
+        <button class="btn btn-danger my-2" type="button" @click="deleteProject()">Löschen</button>
+      </div>
+      
       <project-content-list :project="project" :itemNames="itemNames" :edit="edit" />
     </form>
   </div>
@@ -75,11 +79,13 @@
             msg: "Das Projekt konnte nicht gespeichert werden."
           });
         }
+      },
+      async deleteProject() {
+
       }
     }
   }
 </script>
 
 <style lang="scss">
-
 </style>

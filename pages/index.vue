@@ -34,7 +34,7 @@
         </NuxtLink>
       </div>
       <div class="flex-fill link-btn p-0">
-        <NuxtLink to="/project/1">
+        <NuxtLink to="/project">
           <div class="icon bi bi-graph-up-arrow"></div>
           <h1 class="icon-label">Projekte</h1>
         </NuxtLink>
