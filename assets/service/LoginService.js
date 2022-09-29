@@ -22,7 +22,10 @@ export default class LoginService {
       data
     }).then(() => {
       return true
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false
     })
   }
@@ -39,7 +42,10 @@ export default class LoginService {
       data: {}
     }).then(() => {
       return true
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false
     })
   }
@@ -63,7 +69,10 @@ export default class LoginService {
         cid: response.data.cid,
         cTag: response.data.ctag
       }
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return null
     })
   }

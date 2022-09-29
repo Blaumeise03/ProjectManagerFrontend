@@ -47,7 +47,12 @@ export default class TransactionAPI {
     }).then((response) => {
       const d = response.data;
       return new Transaction(d.tid, d.from, d.to, d.price, d.purpose, d.reference, d.time, d.verified, d.nameFrom, d.nameTo);;
-    })
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
+      return null;
+    });
   }
 
   /**
@@ -68,7 +73,12 @@ export default class TransactionAPI {
         transactions.push(new Transaction(t.tid, t.from, t.to, t.price, t.purpose, t.reference, t.time, t.verified, t.nameFrom, t.nameTo))
       })
       return transactions
-    })
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
+      return [];
+    });
   }
 
   /**
@@ -85,7 +95,12 @@ export default class TransactionAPI {
       withCredentials: true
     }).then((response) => {
       return response.data;
-    })
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
+      return -1;
+    });
   }
 
   /**
@@ -118,7 +133,10 @@ export default class TransactionAPI {
       withCredentials: true
     }).then((response) => {
       return true;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false;
     })
   }
@@ -136,7 +154,10 @@ export default class TransactionAPI {
       withCredentials: true
     }).then((response) => {
       return true;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false;
     })
   }

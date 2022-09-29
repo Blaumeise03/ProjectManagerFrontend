@@ -15,7 +15,10 @@ export default class ContractService {
     }).then((response) => {
       let contract = Contract.parseContract(response.data);
       return contract;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return null;
     })
   }
@@ -30,7 +33,10 @@ export default class ContractService {
       withCredentials: true
     }).then((response) => {
       return true;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false;
     })
   }
@@ -44,7 +50,10 @@ export default class ContractService {
       withCredentials: true
     }).then((response) => {
       return true;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false;
     })
   }
@@ -60,7 +69,10 @@ export default class ContractService {
     }).then((response) => {
       let contract = Contract.parseContract(response.data);
       return contract;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false;
     })
   }
@@ -82,7 +94,10 @@ export default class ContractService {
         contracts.push(Contract.parseContract(d));
       }
       return contracts;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return [];
     })
   }

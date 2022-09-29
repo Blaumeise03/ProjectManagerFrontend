@@ -23,6 +23,9 @@ export default class PlayerAPI {
       const t = response.data;
       return new Player(t.id, t.name, t.ingameID, t.corp, t.parent, t.user);
     }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return null;
     })
   }
@@ -44,6 +47,9 @@ export default class PlayerAPI {
       const t = response.data;
       return new Player(t.id, t.name, t.ingameID, t.corp, t.parent, t.user);
     }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return null;
     })
   }
@@ -66,6 +72,9 @@ export default class PlayerAPI {
       })
       return players
     }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return [];
     })
   }
@@ -90,6 +99,9 @@ export default class PlayerAPI {
       })
       return players
     }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return [];
     })
   }
@@ -113,6 +125,9 @@ export default class PlayerAPI {
       })
       return wallets;
     }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return [];
     })
   }
@@ -132,6 +147,9 @@ export default class PlayerAPI {
     }).then((response) => {
       return response.data;
     }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return [];
     })
   }

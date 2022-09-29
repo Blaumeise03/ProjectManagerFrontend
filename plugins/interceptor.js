@@ -43,5 +43,6 @@ export default (ctx, inject) => {
         }
       }
     }
+    return Promise.reject({ intercepted: true, error: error });
   })
 }

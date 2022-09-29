@@ -14,41 +14,33 @@ export default class CorpService {
       url: 'project/' + id,
       withCredentials: true
     }).then((response) => {
-      const p = response.data;
-      for (let c of p.content) {
-        if (c.item) {
-          c.item = Item.parseFullItem(c.item);
-        }
-      }
-      let project = new Project(p.id, p.corp, p.name, p.created, p.content, p.revenue);
-      let content = []
-      let childs = []
-      for (let c of project.content) {
-        c.childs = []
-        c.isChild = false;
-        c.auto = false;
-        if (c.parent == null) {
-          content.push(c);
-        } else {
-          childs.push(c);
-        }
-      }
-      for (let child of childs) {
-        for (let c of content) {
-          if (c.id == child.parent) {
-            c.childs.push(child);
-            child.isChild = true;
-            child.auto = true;
-            break;
-          }
-        }
-      }
-      project.content = content;
-      project.defaultPrice = "MARKET_LOWEST_SELL";
+      let project = Project.parseData(response.data);
       this.orderProjectContent(project);
       return project;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return null;
+    })
+  }
+
+  findAll() {
+    return this.axios({
+      method: 'get',
+      url: 'project/all',
+      withCredentials: true
+    }).then((response) => {
+      let res = [];
+      for (let data of response.data) {
+        res.push(Project.parseData(data));
+      }
+      return res;
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
+      return [];
     })
   }
 
@@ -78,8 +70,13 @@ export default class CorpService {
       data: data,
       withCredentials: true
     }).then((response) => {
-      return true;
-    }).catch(() => {
+      let project = Project.parseData(response.data);
+      this.orderProjectContent(project);
+      return project;
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false;
     })
   }

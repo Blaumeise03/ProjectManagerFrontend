@@ -20,6 +20,11 @@ export default class CorpService {
     }).then((response) => {
       const c = response.data;
       return new Corp(c.cid, c.tag, c.name);
-    })
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
+      return null;
+    });
   }
 }

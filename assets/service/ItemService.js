@@ -16,7 +16,10 @@ export default class ItemApi {
     }).then((response) => {
       const d = response.data;
       return new Item(d.itemID, d.itemName, d.itemType, d.order);
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return null;
     })
   }
@@ -31,7 +34,10 @@ export default class ItemApi {
     }).then((response) => {
       const d = response.data;
       return Item.parseFullItem(d);
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return null;
     })
   }
@@ -46,7 +52,10 @@ export default class ItemApi {
     }).then((response) => {
       const d = response.data;
       return Item.parseFullItem(d);
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return null;
     })
   }
@@ -63,7 +72,10 @@ export default class ItemApi {
         items.push(Item.parseFullItem(d));
       })
       return items;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return [];
     })
   }
@@ -80,14 +92,17 @@ export default class ItemApi {
         items.push(d);
       })
       return items;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return [];
     })
   }
 
   loadPrices(item) {
     if (item == null) return null;
-    
+
     return this.axios({
       method: 'get',
       url: 'item/' + item.itemID + '/price',
@@ -98,7 +113,10 @@ export default class ItemApi {
         item.prices.push(new Price(d.item, d.priceType, d.value));
       });
       return item;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return null;
     })
   }
@@ -134,7 +152,12 @@ export default class ItemApi {
         item.blueprint.baseCost[d.item] = d.quantity;
       });
       return item;
-    })
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
+      return null;
+    });
   }
 
   save(item) {
@@ -145,7 +168,10 @@ export default class ItemApi {
       withCredentials: true
     }).then((response) => {
       return true;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false;
     })
   }
@@ -157,7 +183,10 @@ export default class ItemApi {
       withCredentials: true
     }).then((response) => {
       return true;
-    }).catch(() => {
+    }).catch((error) => {
+      if (!error.intercepted) {
+        throw error.error;
+      }
       return false;
     })
   }
